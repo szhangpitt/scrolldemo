@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Cat",
+    "value": 0.24
+  },
+  {
+    "name": "Kitten",
+    "value": 0.10
+  },
+  {
+    "name": "Pet",
+    "value": 0.09
+  },
+  {
+    "name": "Baby",
+    "value": 0.08
+  },
+  {
+    "name": "Cute",
+    "value": 0.41
+  },
+  {
+    "name": "Small",
+    "value": 0.06
+  }
+]

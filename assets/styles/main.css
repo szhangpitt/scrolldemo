@@ -1,0 +1,165 @@
+* {
+  padding: 0; }
+
+.glyph-progress {
+  height: 128px;
+  width: 128px;
+  margin: 15px auto;
+  position: relative; }
+  .glyph-progress .view-port {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    overflow: hidden;
+    margin: 0 !important; }
+    .glyph-progress .view-port .glyphicon {
+      margin: 0 !important; }
+  .glyph-progress .bg {
+    -webkit-transition: height 0.8s ease-out;
+    -moz-transition: height 0.8s ease-out;
+    transition: height 0.8s ease-out; }
+    .glyph-progress .bg .glyphicon {
+      color: #3BAFDA; }
+  .glyph-progress .fg {
+    -webkit-transition: height 0.8s ease-out;
+    -moz-transition: height 0.8s ease-out;
+    transition: height 0.8s ease-out; }
+
+.transparent-first {
+  opacity: 0;
+  -webkit-transition: opacity 0.3s ease-out;
+  -moz-transition: opacity 0.3s ease-out;
+  transition: opacity 0.3s ease-out; }
+  .transparent-first.visible {
+    opacity: 1;
+    -webkit-transition: opacity 0.3s ease-out 0.5s;
+    -moz-transition: opacity 0.3s ease-out 0.5s;
+    transition: opacity 0.3s ease-out 0.5s; }
+
+.reset {
+  margin-top: 32px; }
+
+img {
+  max-width: 50%;
+  max-height: 50%; }
+
+header {
+  position: relative;
+  overflow: hidden;
+  height: 10%;
+  background: #ddd;
+  z-index: 999; }
+
+article {
+  background: #fafafa; }
+  article section.step {
+    background: #fafafa;
+    height: 100%;
+    position: relative;
+    -webkit-box-shadow: 0 -6px 6px #aaa;
+    -moz-box-shadow: 0 -6px 6px #aaa;
+    box-shadow: 0 -6px 6px #aaa; }
+    article section.step.folded {
+      overflow: hidden; }
+    article section.step .content {
+      padding: 30px; }
+      article section.step .content h2 {
+        margin-top: 0;
+        margin-bottom: 30px; }
+      article section.step .content .glyphicon {
+        font-size: 128px;
+        margin: 48px; }
+      article section.step .content .form-group {
+        position: relative; }
+      article section.step .content input + .glyphicon {
+        font-size: 18px;
+        margin: 0;
+        position: absolute;
+        float: right;
+        right: 16px;
+        border-radius: 5px;
+        padding: 13px;
+        background: white; }
+      article section.step .content .btn-lg {
+        font-size: 42px; }
+
+.tag-rank li {
+  list-style-type: none; }
+  .tag-rank li:hover {
+    font-weight: bold; }
+.tag-rank .progress {
+  background-color: transparent; }
+  .tag-rank .progress .progress-bar {
+    width: 0%;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    -webkit-transition: width 0.4s ease-out 2s;
+    -moz-transition: width 0.4s ease-out 2s;
+    transition: width 0.4s ease-out 2s; }
+
+.adv-cloud li {
+  list-style-type: none;
+  display: inline-block;
+  margin: 0 24px;
+  position: relative;
+  top: 10px;
+  -webkit-transition: top 0.4s ease-out;
+  -moz-transition: top 0.4s ease-out;
+  transition: top 0.4s ease-out; }
+  .adv-cloud li:hover {
+    -webkit-transform: scale(1.2);
+    -moz-transform: scale(1.2);
+    transform: scale(1.2);
+    -webkit-transition: transform 0.4s ease-out;
+    -moz-transition: transform 0.4s ease-out;
+    transition: transform 0.4s ease-out; }
+
+.card-animation #step1 + #step2 {
+  top: 0;
+  margin-top: 0;
+  -webkit-transition: top 0.4s ease-out 0.1s;
+  -moz-transition: top 0.4s ease-out 0.1s;
+  transition: top 0.4s ease-out 0.1s; }
+  .card-animation #step1 + #step2 + #step3 {
+    top: -90%;
+    margin-top: 0;
+    -webkit-transition: top 0.4s ease-out;
+    -moz-transition: top 0.4s ease-out;
+    transition: top 0.4s ease-out; }
+.card-animation #step1.folded + #step2 {
+  top: -100%;
+  margin-top: 60px;
+  -webkit-transition: top 0.4s ease-out;
+  -moz-transition: top 0.4s ease-out;
+  transition: top 0.4s ease-out; }
+  .card-animation #step1.folded + #step2 + #step3 {
+    top: -100%;
+    margin-top: 0;
+    -webkit-transition: top 0.4s ease-out;
+    -moz-transition: top 0.4s ease-out;
+    transition: top 0.4s ease-out; }
+  .card-animation #step1.folded + #step2.folded + #step3 {
+    top: -200%;
+    margin-top: 60px;
+    -webkit-transition: top 0.4s ease-out;
+    -moz-transition: top 0.4s ease-out;
+    transition: top 0.4s ease-out; }
+
+.linear-scroll-animation {
+  height: auto; }
+  .linear-scroll-animation #step1, .linear-scroll-animation #step2, .linear-scroll-animation #step3 {
+    top: 0px;
+    -webkit-transition: top 0.4s ease-out 0.8s;
+    -moz-transition: top 0.4s ease-out 0.8s;
+    transition: top 0.4s ease-out 0.8s; }
+  .linear-scroll-animation #step2, .linear-scroll-animation #step3 {
+    top: 20px;
+    opacity: 0; }
+  .linear-scroll-animation #step1.folded + #step2, .linear-scroll-animation #step1.folded + #step2.folded + #step3 {
+    top: -10px;
+    opacity: 1;
+    -webkit-transition: all 0.4s ease-out 0.8s;
+    -moz-transition: all 0.4s ease-out 0.8s;
+    transition: all 0.4s ease-out 0.8s; }

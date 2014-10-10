@@ -1,0 +1,234 @@
+@import  "bootflat/scss/bootflat/_global.scss";
+
+
+*{
+	padding: 0;
+}
+
+// .article-viewport {
+// 	position: relative;
+// 	height: 90%;
+// 	overflow-y: scroll;
+// 	article {
+// 		position: relative;
+// 		@include transition (top 0.8s ease-out );
+// 	}
+
+// 	&.show-step-1 article {
+// 		top: -10px; 
+// 	}
+
+// 	&.show-step-2 article {
+// 		top: -50px; 
+// 	}
+
+// 	&.show-step-3 article {
+// 		top: -160px; 
+// 	}
+
+// }
+
+.glyph-progress {
+	height: 128px;
+	width: 128px;
+	margin: 15px auto;
+	position: relative;
+
+	.view-port {
+		position: absolute;
+		left: 0;
+		top: 0;
+		bottom: 0;
+		overflow: hidden;
+		margin: 0 !important;
+
+		.glyphicon {
+			margin: 0 !important;
+		}
+	}
+
+	.bg {  
+		@include transition (height 0.8s ease-out );
+		.glyphicon {
+			color: $aqua-dark;  
+		}
+	}
+
+	.fg {
+		@include transition (height 0.8s ease-out );
+		.glyphicon {
+
+		}
+
+	}
+}
+
+.transparent-first {
+	opacity: 0;
+	@include transition (opacity 0.3s ease-out );
+
+	&.visible {
+		opacity: 1;
+		@include transition (opacity 0.3s ease-out 0.5s );
+	}
+}
+
+.reset {
+	margin-top: 32px;
+}
+
+img {
+	max-width: 50%;
+	max-height: 50%;
+}
+
+html, body{
+	// height: 100%;
+}
+
+header{
+	position: relative;
+	overflow: hidden; 
+	height: 10%;
+	background: #ddd;
+	z-index: 999;
+}
+
+article {
+	background: #fafafa;
+
+	section.step {
+		background: #fafafa;
+		height:100%;
+		position: relative;
+		@include box-shadow(0 -6px 6px #aaa);
+
+		&.folded {
+			overflow: hidden;
+		}
+
+		.content {          
+			padding: 30px;
+
+			h2{
+				margin-top: 0; 
+				margin-bottom: 30px;
+			}
+
+			.glyphicon {
+				font-size: 128px;
+				margin: 48px;
+			}
+
+			.form-group {
+				position: relative;
+			}
+
+			input + .glyphicon {
+				font-size: 18px;
+				margin: 0;
+				position: absolute;        
+				float: right;
+				right: 16px;
+				border-radius: 5px;
+				padding: 13px;
+				background: white;
+			}
+
+			.btn-lg {
+				font-size: 42px;
+			}
+		}
+	}
+}
+
+
+.tag-rank {
+	li {
+		list-style-type: none;
+
+		&:hover {
+			font-weight: bold;
+		}
+	}
+	.progress {
+		background-color: transparent;
+		.progress-bar {
+			width: 0%;
+			@include radius (border-radius, 4px);
+			@include transition (width 0.4s ease-out 2s);
+		}
+	}
+}
+
+.adv-cloud {
+	li {
+		list-style-type: none;
+		display: inline-block;
+		margin: 0 24px;
+
+		position: relative;
+		top: 10px;
+
+		@include transition (top 0.4s ease-out);
+		
+		&:hover {
+			@include transform (scale(1.2));
+			@include transition (transform 0.4s ease-out);
+		}
+	}
+}
+
+.card-animation #step1 {
+	& + #step2 {
+		top: 0;
+		margin-top: 0;
+		@include transition (top 0.4s ease-out 0.1s);
+
+		& + #step3{
+			top: -90%;
+			margin-top: 0;              
+			@include transition (top 0.4s ease-out);
+		}
+	}
+
+	&.folded + #step2 {
+		top: -100%;
+		margin-top: 60px;
+		@include transition (top 0.4s ease-out);
+
+		& + #step3 {       
+			top: -100%;
+			margin-top: 0;
+			@include transition (top 0.4s ease-out);
+		}
+
+		&.folded + #step3 {
+			top: -200%;
+			margin-top: 60px;
+			@include transition (top 0.4s ease-out);
+		}
+	}
+}
+
+.linear-scroll-animation {
+	height: auto;
+	#step1, #step2, #step3 {
+		top: 0px;
+		@include transition (top 0.4s ease-out 0.8s);
+	}
+
+	#step2, #step3 {
+		top: 20px;
+		opacity: 0;
+	}
+
+	#step1.folded + #step2, 
+	#step1.folded + #step2.folded + #step3 {
+		top: -10px;
+		opacity: 1;
+		@include transition (all 0.4s ease-out 0.8s);
+	}
+}
+
+
