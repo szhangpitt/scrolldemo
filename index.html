@@ -51,8 +51,8 @@
                             <ul class="">
                                 
                                 <div class="progress" ng-style="{'height': (16 + tag.value * 48) * 1.5 + 'px' }">
-                                    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{tag.value * 100}}" aria-valuemin="0" aria-valuemax="100" style="width: {{tag.value / maxValue(tags) * 60}}%", ng-style="{'font-size': (12 + tag.value * 24) + 'px', 'line-height':  (16 + tag.value * 48) * 1.5 + 'px'}"> {{tag.value}}
-                                    <span class="sr-only">{{tag.value * 100}}% Complete (success)</span>
+                                    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{tag.value * 100}}" aria-valuemin="0" aria-valuemax="100" style="position:relative;width: {{tag.value / maxValue(tags) * 60}}%", ng-style="{'font-size': (12 + tag.value * 24) + 'px', 'line-height':  (16 + tag.value * 48) * 1.5 + 'px'}"> 
+                                    <span class="" style="position: absolute; left: 100%; color: #666; margin-left: 0.5em">{{tag.value}}</span>
                                 </div>
                             </div>
                         </ul>
