@@ -70,7 +70,7 @@
                 <ul class="adv-cloud">
                     <li ng-repeat="adv in advs" ng-style="{'font-size': (24 + adv.value * 24) + 'px', 'line-height': '1.5', 'transition': 'top 0.4s ease ' +  adv.value * 5 + 's' + ',' + 'opacity 0.4s ease ' +  adv.value * 5 + 's' + ',' + 'transform 0.4s ease ', 'top': (advLoadPercentage === 100) && '0' || '10px' }" class=" transparent-first {{visible('adv') && 'visible'}}">{{adv.name}}</li>
                 </ul>
-                <a href="/" class="btn  btn-default reset transparent-first {{visible('adv') && 'visible'}}" ng-click="completeSection(0);$event.stopPropagation();">重新开始</a>
+                <a href="./index.html" class="btn  btn-default reset transparent-first {{visible('adv') && 'visible'}}" ng-click="completeSection(0);$event.stopPropagation();">重新开始</a>
             </div>
 
         </section>
