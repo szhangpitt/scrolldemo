@@ -75,6 +75,19 @@ appModule.controller('UIController', ['$scope', '$rootScope', 'TagService', 'Ran
 			});
 		}
 
+		$scope.maxValue = function(tags) {
+			if(tags.length && tags.length > 0) {
+				var max = -999;
+				for (var i = 0, len = tags.length; i < len; i++) {
+					if (tags[i].value > max) {
+						max = tags[i].value;
+					}
+				}
+				return max;
+			}
+			return 100;
+		}
+
 		$scope.getAdvs = function() {	
 			clearInterval(advLoadInterval);
 			advLoadPercentage = 20;
