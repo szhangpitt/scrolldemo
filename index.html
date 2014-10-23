@@ -1,7 +1,7 @@
 <!doctype html>
 <html ng-app="tagdemo">
 <head>
-    <title>标签识别演示</title>
+    <title>Shaopeng Zhang</title>
     <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.css">
     <link rel="stylesheet" href="bootflat/css/bootflat.css">
     <link rel="stylesheet" href="assets/styles/main.css">
@@ -10,29 +10,21 @@
 
 <body>
     <header>
-        <h3>标签识别演示<!-- Demo --></h3>
+        <h3>Shaopeng Zhang</h3>
     </header>
     <div class="article-viewport" >
         <article ng-controller="UIController" class="linear-scroll-animation">
 
             <section id="step1" class="step text-center" ng-class="{'folded': completedSection >= 1}">
                 <div class="content" >
-                    <h2><a class="btn btn-primary btn-lg" ng-click="resetAll();scrollToSection(1);inputRandomImage()">加载图片</a></h2>           
+                    <h2><a class="btn btn-primary btn-lg" ng-click="resetAll();scrollToSection(1);inputRandomImage()">Who's there?</a></h2>           
                     <div load-progress-icon iconclass="glyphicon glyphicon-picture" progress="{{imageLoadPercentage}}"></div>
-                    <form class="form row" role="form" >
-                        <div class="form-group col-lg-6 col-lg-offset-3">
-                            <label class="sr-only" for="imgUrl">图片链接</label>
-                            <input id="imgUrl" type="text" class="form-control input-lg" placeholder="图片链接" ng-model="imgUrl">
-                            <span class="glyphicon glyphicon-random" ng-click="scrollToSection(1);inputRandomImage();"></span>
 
-                        </div>
-                    </form>
-
-                    <div class="result-view-port">
-
-
-                        <img ng-src="{{imgUrl}}" class="result-content transparent-first {{visible('image') && 'visible'}}" alt="Image to be analyzed" fade-in-on-load>
+                    <div class="result-viewport transparent-first {{visible('image') && 'visible'}}">
+                        <img ng-src="{{imgUrl}}" class="result-content" alt="Image to be analyzed" fade-in-on-load>
+                        <p class="text-lg">Hello! My name is Shaopeng Zhang. I am a front end developer, a user experience designer, and a project manager. </p>
                     </div>
+
 
                 </div>
 
@@ -40,19 +32,19 @@
 
             <section id="step2" class="step text-center" ng-class="{'folded': completedSection === 2}">
                 <div class="content">
-                    <h2><a class="btn btn-lg btn-primary" ng-click="scrollToSection(2);$event.stopPropagation();getTags();" >标签识别</a></h2>
+                    <h2><a class="btn btn-lg btn-primary" ng-click="scrollToSection(2);$event.stopPropagation();getTags();" >What do I know?</a></h2>
                     <div load-progress-icon iconclass="glyphicon glyphicon-filter" progress="{{tagLoadPercentage}}" reverse="true"></div>
 
                     <div class="row tag-rank transparent-first {{visible('tag') && 'visible'}}" ng-repeat="tag in tags | orderBy: 'value': true" >
                         <div class="col-xs-6 text-right">
-                                <div ng-style="{'font-size': 16 + tag.value * 48 + 'px', 'line-height': '1.5'}">{{tag.name}}</div>          
+                                <div ng-style="{'font-size': tagBaseHeight(tag.value) + 'px', 'line-height': '1.5'}">{{tag.name}}</div>          
                         </div>
                         <div class="col-xs-6 text-left">
                             <ul class="">
                                 
-                                <div class="progress" ng-style="{'height': (16 + tag.value * 48) * 1.5 + 'px' }">
-                                    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{tag.value * 100}}" aria-valuemin="0" aria-valuemax="100" style="position:relative;width: {{tag.value / maxValue(tags) * 60}}%", ng-style="{'font-size': (12 + tag.value * 24) + 'px', 'line-height':  (16 + tag.value * 48) * 1.5 + 'px'}"> 
-                                    <span class="" style="position: absolute; left: 100%; color: #666; margin-left: 0.5em">{{tag.value}}</span>
+                                <div class="progress" ng-style="{'height': tagBaseHeight(tag.value) * 1.5 + 'px' }">
+                                    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{tag.value * 100}}" aria-valuemin="0" aria-valuemax="100" style="position:relative;width: {{tag.value / maxValue(tags) * 60}}%", ng-style="{'font-size': tagBaseHeight(tag.value) / 1.5 + 'px', 'line-height':  tagBaseHeight(tag.value) * 1.5 + 'px'}"> 
+                                    <span class="progress-label">{{tag.value}}</span>
                                 </div>
                             </div>
                         </ul>
@@ -66,12 +58,13 @@
 
         <section id="step3" class="step text-center" ng-class="{'folded': completedSection === 3}">
             <div class="content" >
-                <h2><a class="btn btn-lg btn-primary" ng-click="scrollToSection(3);$event.stopPropagation();getAdvs();" >广告推荐</a></h2>
+                <h2><a class="btn btn-lg btn-primary" ng-click="scrollToSection(3);$event.stopPropagation();getAdvs();" >What skills do I have?</a></h2>
                 <div load-progress-icon iconclass="glyphicon glyphicon-globe" progress="{{advLoadPercentage}}"></div>
                 <ul class="adv-cloud">
-                    <li ng-repeat="adv in advs" ng-style="{'font-size': (24 + adv.value * 24) + 'px', 'line-height': '1.5', 'transition': 'top 0.4s ease ' +  adv.value * 5 + 's' + ',' + 'opacity 0.4s ease ' +  adv.value * 5 + 's' + ',' + 'transform 0.4s ease ', 'top': (advLoadPercentage === 100) && '0' || '10px' }" class=" transparent-first {{visible('adv') && 'visible'}}">{{adv.name}}</li>
+                    <li ng-repeat="adv in advs" ng-style="{'font-size': (16 + adv.value * 24) + 'px', 'line-height': '1.5', 'transition': 'top 0.4s ease ' +  (adv.value) * 5 + 's' + ',' + 'opacity 0.4s ease ' +  adv.value * 5 + 's' + ',' + 'transform 0.4s ease ', 'top': (advLoadPercentage === 100) && '0' || '10px', 'animation-delay': (10 + adv.value * 6) + 's' }" class=" transparent-first {{visible('adv') && 'visible'}}">{{adv.name}}</li>
                 </ul>
-                <a href="." class="btn  btn-default reset transparent-first {{visible('adv') && 'visible'}}" ng-click="completeSection(0);$event.stopPropagation();">重新开始</a>
+                <a href="." class="btn  btn-default reset transparent-first {{visible('adv') && 'visible'}}">Do it again!</a>
+                <!-- -->
             </div>
 
         </section>

@@ -1,3 +1,7 @@
+$(document).ready(function(){
+     $("html,body").animate({scrollTop: 0}, 400);
+});
+
 var appModule = angular.module('tagdemo', []);
 
 appModule.controller('UIController', ['$scope', '$rootScope', 'TagService', 'RandomImageGenerator',
@@ -21,6 +25,10 @@ appModule.controller('UIController', ['$scope', '$rootScope', 'TagService', 'Ran
 			else if (identifier === 'adv') {
 				return $scope.advLoadPercentage === 100;
 			}
+		}
+
+		$scope.tagBaseHeight = function(value) {
+			return Math.min(28, 16 + value * 48);
 		}
 
 		$scope.completeSection = function(step) {
@@ -99,8 +107,14 @@ appModule.controller('UIController', ['$scope', '$rootScope', 'TagService', 'Ran
 
 			TagService.getAdvs().then(function(data) {
 				console.log('getAdvs: ', data);
-
+				
+				if(angular.isArray(data)) {
+					data.forEach(function(element, index, array) {
+						element.value = element.value + 0.3 * (Math.random() - 0.5);
+					});
+				}
 				$scope.advs = data;
+
 
 				setTimeout(function() {
 					console.log('1s after getTags data: ', data);
@@ -116,7 +130,7 @@ appModule.controller('UIController', ['$scope', '$rootScope', 'TagService', 'Ran
 
 		$scope.inputRandomImage = function() {
 			// $scope.imgUrl = null;
-			$scope.imgUrl = RandomImageGenerator.getUrl();
+			$scope.imgUrl = RandomImageGenerator.getShaopengUrl();
 			// $scope.$apply();
 
 		}
@@ -172,6 +186,10 @@ appModule.factory('RandomImageGenerator', [function () {
 
 		getUrl: function() {
 			return 'http://lorempixel.com/1024/768/cats/?dummy=' + Math.random();
+		},
+
+		getShaopengUrl: function() {
+			return 'http://shaopeng.us/images/banner800.jpg?' + Math.random();
 		}
 
 	};
@@ -220,9 +238,3 @@ appModule.directive('fadeInOnLoad', ['$rootScope', function ($rootScope) {
 	};
 }]);
 
-
-$(document).ready(function(e) {
-	$('.fold').on('click', function(e){
-		$(this).addClass('toggled');
-	});
-});

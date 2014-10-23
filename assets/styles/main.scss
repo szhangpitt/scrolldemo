@@ -77,9 +77,11 @@
 	margin-top: 32px;
 }
 
-img {
-	max-width: 50%;
-	max-height: 50%;
+.result-viewport {
+	img {
+		max-width: 100%;
+		max-height: 300px;
+	}
 }
 
 html, body{
@@ -138,6 +140,10 @@ article {
 			.btn-lg {
 				font-size: 42px;
 			}
+
+			.text-lg {
+				font-size: 1.3em;
+			}
 		}
 	}
 }
@@ -158,6 +164,12 @@ article {
 			@include radius (border-radius, 4px);
 			@include transition (width 0.4s ease-out 2s);
 		}
+		.progress-label {
+			position: absolute; 
+			left: 100%; 
+			color: #666; 
+			margin-left: 0.5em
+		}
 	}
 }
 
@@ -165,19 +177,45 @@ article {
 	li {
 		list-style-type: none;
 		display: inline-block;
-		margin: 0 24px;
+		margin: 8px 24px;
 
 		position: relative;
 		top: 10px;
 
 		@include transition (top 0.4s ease-out);
 		
+		@include animation (twinkle 5s infinite);
+
 		&:hover {
-			@include transform (scale(1.2));
+			@include transform (scale(1.14));
 			@include transition (transform 0.4s ease-out);
 		}
 	}
 }
+
+@include keyframes(twinkle) {
+	0% {
+		color: $darkgray-dark;
+	}
+
+	50% {
+		color: lighten($darkgray-dark, 60%);
+	}
+
+	100% {
+		color: $darkgray-dark;
+	}
+}
+
+// We use this to creat animation effect.
+// Examples:
+// @include keyframes(move-the-object) {
+//   0%   { left: 100px; }
+//   100% { left: 200px; }
+// }
+// .object-to-animate {
+//   @include animation(move-the-object .5s 1);
+// } 
 
 .card-animation #step1 {
 	& + #step2 {

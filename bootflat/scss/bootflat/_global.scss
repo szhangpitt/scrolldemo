@@ -48,6 +48,7 @@ $mediumgray-light:            #CCD1D9 !default;
 
 $darkgray-dark:               #434A54 !default;
 $darkgray-light:              #656D78 !default;
+		  
 
 // Global Mixins
 //------------------------------------------------------
@@ -181,21 +182,21 @@ $darkgray-light:              #656D78 !default;
 	$original-prefix-spec:      $prefix-spec;
 
 	@if $original-prefix-webkit {
-		@include disable-prefix();
+		// @include disable-prefix();
 		$prefix-webkit: true !global;
 	    @-webkit-keyframes #{$name} {
 	      @content;
 	    }
 	}
 	@if $original-prefix-moz {
-		@include disable-prefix();
+		// @include disable-prefix();
 		$prefix-moz: true !global;
 	    @-moz-keyframes #{$name} {
 	      @content;
 	    }
 	}
 	@if $original-prefix-spec {
-		@include disable-prefix();
+		// @include disable-prefix();
 		$prefix-spec: true !global;
 	    @keyframes #{$name} {
 	      @content;
