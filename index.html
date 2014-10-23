@@ -6,12 +6,23 @@
     <link rel="stylesheet" href="bootflat/css/bootflat.css">
     <link rel="stylesheet" href="assets/styles/main.css">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <script type="text/javascript" src="http://platform.linkedin.com/in.js">
+    api_key: 758va66jwo20ou
+    authorize: true
+    </script>
+
 </head>
 
 <body>
+        
+
     <header>
         <h3>Shaopeng Zhang</h3>
+
     </header>
+<script type="in/Login" data-onAuth="loadData">
+Hello, <?js= firstName ?> <?js= lastName ?>.
+</script>
     <div class="article-viewport" >
         <article ng-controller="UIController" class="linear-scroll-animation">
 
@@ -37,56 +48,58 @@
 
                     <div class="row tag-rank transparent-first {{visible('tag') && 'visible'}}" ng-repeat="tag in tags | orderBy: 'value': true" >
                         <div class="col-xs-6 text-right">
-                                <div ng-style="{'font-size': tagBaseHeight(tag.value) + 'px', 'line-height': '1.5'}">{{tag.name}}</div>          
+                            <div ng-style="{'font-size': tagBaseHeight(tag.value) + 'px', 'line-height': '1.5'}">{{tag.name}}</div>          
                         </div>
                         <div class="col-xs-6 text-left">
                             <ul class="">
-                                
+
                                 <div class="progress" ng-style="{'height': tagBaseHeight(tag.value) * 1.5 + 'px' }">
                                     <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{tag.value * 100}}" aria-valuemin="0" aria-valuemax="100" style="position:relative;width: {{tag.value / maxValue(tags) * 60}}%", ng-style="{'font-size': tagBaseHeight(tag.value) / 1.5 + 'px', 'line-height':  tagBaseHeight(tag.value) * 1.5 + 'px'}"> 
-                                    <span class="progress-label">{{tag.value}}</span>
+                                        <span class="progress-label">{{tag.value}}</span>
+                                    </div>
                                 </div>
-                            </div>
-                        </ul>
+                            </ul>
+                        </div>
                     </div>
+
+
                 </div>
 
+            </section>
 
-            </div>
+            <section id="step3" class="step text-center" ng-class="{'folded': completedSection === 3}">
+                <div class="content" >
+                    <h2><a class="btn btn-lg btn-primary" ng-click="scrollToSection(3);$event.stopPropagation();getAdvs();" >What skills do I have?</a></h2>
+                    <div load-progress-icon iconclass="glyphicon glyphicon-globe" progress="{{advLoadPercentage}}"></div>
+                    <ul class="adv-cloud">
+                        <li ng-repeat="adv in advs" ng-style="{'font-size': (16 + adv.value * 24) + 'px', 'line-height': '1.5', 'transition': 'top 0.4s ease ' +  (adv.value) * 5 + 's' + ',' + 'opacity 0.4s ease ' +  adv.value * 5 + 's' + ',' + 'transform 0.4s ease ', 'top': (advLoadPercentage === 100) && '0' || '10px', 'animation-delay': (10 + adv.value * 6) + 's' }" class=" transparent-first {{visible('adv') && 'visible'}}">{{adv.name}}</li>
+                    </ul>
+                    <a href="." class="btn  btn-default reset transparent-first {{visible('adv') && 'visible'}}">Do it again!</a>
+                    <!-- -->
+                </div>
 
-        </section>
+            </section>
 
-        <section id="step3" class="step text-center" ng-class="{'folded': completedSection === 3}">
-            <div class="content" >
-                <h2><a class="btn btn-lg btn-primary" ng-click="scrollToSection(3);$event.stopPropagation();getAdvs();" >What skills do I have?</a></h2>
-                <div load-progress-icon iconclass="glyphicon glyphicon-globe" progress="{{advLoadPercentage}}"></div>
-                <ul class="adv-cloud">
-                    <li ng-repeat="adv in advs" ng-style="{'font-size': (16 + adv.value * 24) + 'px', 'line-height': '1.5', 'transition': 'top 0.4s ease ' +  (adv.value) * 5 + 's' + ',' + 'opacity 0.4s ease ' +  adv.value * 5 + 's' + ',' + 'transform 0.4s ease ', 'top': (advLoadPercentage === 100) && '0' || '10px', 'animation-delay': (10 + adv.value * 6) + 's' }" class=" transparent-first {{visible('adv') && 'visible'}}">{{adv.name}}</li>
-                </ul>
-                <a href="." class="btn  btn-default reset transparent-first {{visible('adv') && 'visible'}}">Do it again!</a>
-                <!-- -->
-            </div>
-
-        </section>
-
-    </article>
-</div>
+        </article>
+    </div>
 
 
 
-<!-- Bootstrap -->
-<!--<script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>-->
+    <!-- Bootstrap -->
+    <!--<script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>-->
     <!--<script src="https://netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>-->
     <script src="assets/libs/jquery/jquery.min.js"></script>
     <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>-->
     <script src="assets/libs/bootstrap/js/bootstrap.min.js"></script>
-
+    <script src="assets/scripts/linkedin.js"></script>
 <!-- Bootflat's JS files.
     <script src="https://bootflat.github.io/bootflat/js/icheck.min.js"></script>
     <script src="https://bootflat.github.io/bootflat/js/jquery.fs.selecter.min.js"></script>
     <script src="https://bootflat.github.io/bootflat/js/jquery.fs.stepper.min.js"></script>
 -->
 <script src="assets/libs/angular/angular.js"></script>
+
 <script src="assets/scripts/all.js"></script>
+
 </body>
 </html>
