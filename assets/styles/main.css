@@ -44,6 +44,9 @@
   max-width: 100%;
   max-height: 300px; }
 
+html, body {
+  background: #fafafa; }
+
 header {
   position: relative;
   overflow: hidden;
@@ -51,40 +54,41 @@ header {
   background: #ddd;
   z-index: 999; }
 
-article {
-  background: #fafafa; }
-  article section.step {
-    background: #fafafa;
-    height: 100%;
-    position: relative;
-    -webkit-box-shadow: 0 -6px 6px #aaa;
-    -moz-box-shadow: 0 -6px 6px #aaa;
-    box-shadow: 0 -6px 6px #aaa; }
-    article section.step.folded {
-      overflow: hidden; }
-    article section.step .content {
-      padding: 30px; }
-      article section.step .content h2 {
-        margin-top: 0;
-        margin-bottom: 30px; }
-      article section.step .content .glyphicon {
-        font-size: 128px;
-        margin: 48px; }
-      article section.step .content .form-group {
-        position: relative; }
-      article section.step .content input + .glyphicon {
-        font-size: 18px;
-        margin: 0;
-        position: absolute;
-        float: right;
-        right: 16px;
-        border-radius: 5px;
-        padding: 13px;
-        background: white; }
-      article section.step .content .btn-lg {
-        font-size: 42px; }
-      article section.step .content .text-lg {
-        font-size: 1.3em; }
+.article-viewport {
+  overflow: hidden; }
+
+article section.step {
+  background: #fafafa;
+  height: 100%;
+  position: relative;
+  -webkit-box-shadow: 0 -6px 6px #ccc;
+  -moz-box-shadow: 0 -6px 6px #ccc;
+  box-shadow: 0 -6px 6px #ccc; }
+  article section.step.folded {
+    overflow: hidden; }
+  article section.step .content {
+    padding: 30px; }
+    article section.step .content h2 {
+      margin-top: 0;
+      margin-bottom: 30px; }
+    article section.step .content .glyphicon {
+      font-size: 128px;
+      margin: 48px; }
+    article section.step .content .form-group {
+      position: relative; }
+    article section.step .content input + .glyphicon {
+      font-size: 18px;
+      margin: 0;
+      position: absolute;
+      float: right;
+      right: 16px;
+      border-radius: 5px;
+      padding: 13px;
+      background: white; }
+    article section.step .content .btn-lg {
+      font-size: 42px; }
+    article section.step .content .text-lg {
+      font-size: 1.3em; }
 
 .tag-rank li {
   list-style-type: none; }
@@ -194,15 +198,17 @@ article {
     -webkit-transition: top 0.4s ease-out 0.8s;
     -moz-transition: top 0.4s ease-out 0.8s;
     transition: top 0.4s ease-out 0.8s; }
-  .linear-scroll-animation #step2, .linear-scroll-animation #step3 {
+  .linear-scroll-animation #step2, .linear-scroll-animation #step3, .linear-scroll-animation #step4 {
+    height: 0;
     top: 20px;
     opacity: 0; }
-  .linear-scroll-animation #step1.folded + #step2, .linear-scroll-animation #step1.folded + #step2.folded + #step3 {
+  .linear-scroll-animation #step1.folded + #step2, .linear-scroll-animation #step1.folded + #step2.folded + #step3, .linear-scroll-animation #step1.folded + #step2.folded + #step3.folded + #step4 {
+    height: auto;
     top: -10px;
     opacity: 1;
-    -webkit-transition: all 0.4s ease-out 0.8s;
-    -moz-transition: all 0.4s ease-out 0.8s;
-    transition: all 0.4s ease-out 0.8s; }
+    -webkit-transition: top 0.4s ease-out 0.8s, opacity 0.4s ease-out 0.8s;
+    -moz-transition: top 0.4s ease-out 0.8s, opacity 0.4s ease-out 0.8s;
+    transition: top 0.4s ease-out 0.8s, opacity 0.4s ease-out 0.8s; }
 
 @media (max-width: 560px) {
   .timeline dl:before {
@@ -243,6 +249,7 @@ article {
   .timeline dl dd .circ {
     display: none; } }
 .timeline dl dd .events {
+  padding-bottom: 10px;
   -webkit-box-shadow: 0 0 8px #ccc;
   -moz-box-shadow: 0 0 8px #ccc;
   box-shadow: 0 0 8px #ccc; }
@@ -267,7 +274,53 @@ article {
         display: none; } }
   .timeline dl dd .events .events-body p {
     font-size: 0.9em;
-    padding-right: 1em; }
+    padding-right: 1em;
+    margin-bottom: 0;
+    position: relative;
+    max-height: 2.8em;
+    -webkit-transition: max-height 0.2s ease-out 0s;
+    -moz-transition: max-height 0.2s ease-out 0s;
+    transition: max-height 0.2s ease-out 0s; }
+    .timeline dl dd .events .events-body p .mask {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 1.5em;
+      opacity: 1;
+      background: -moz-linear-gradient(top, rgba(255, 255, 255, 0) 0%, #ffffff 100%);
+      /* FF3.6+ */
+      background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(255, 255, 255, 0)), color-stop(100%, #ffffff));
+      /* Chrome,Safari4+ */
+      background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0) 0%, #ffffff 100%);
+      /* Chrome10+,Safari5.1+ */
+      background: -o-linear-gradient(top, rgba(255, 255, 255, 0) 0%, #ffffff 100%);
+      /* Opera 11.10+ */
+      background: -ms-linear-gradient(top, rgba(255, 255, 255, 0) 0%, #ffffff 100%);
+      /* IE10+ */
+      background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, #ffffff 100%);
+      /* W3C */
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#ffffff',GradientType=0 );
+      /* IE6-9 */
+      -webkit-transition: opacity 0.5s ease 0;
+      -moz-transition: opacity 0.5s ease 0;
+      transition: opacity 0.5s ease 0; }
+  .timeline dl dd .events:not(.expanded):hover {
+    cursor: pointer; }
+    .timeline dl dd .events:not(.expanded):hover p {
+      max-height: 6.5em;
+      -webkit-transition: max-height 0.2s ease-out 0.6s;
+      -moz-transition: max-height 0.2s ease-out 0.6s;
+      transition: max-height 0.2s ease-out 0.6s; }
+  .timeline dl dd .events.expanded p {
+    max-height: 40em;
+    -webkit-transition: max-height 0.2s ease-out 0s;
+    -moz-transition: max-height 0.2s ease-out 0s;
+    transition: max-height 0.2s ease-out 0s; }
+    .timeline dl dd .events.expanded p .mask {
+      opacity: 0;
+      -webkit-transition: opacity 0.5s ease 0;
+      -moz-transition: opacity 0.5s ease 0;
+      transition: opacity 0.5s ease 0; }
 @media (min-width: 768px) {
   .timeline dl dd.pos-right .time {
     margin-left: auto;

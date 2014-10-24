@@ -86,6 +86,7 @@
 
 html, body{
 	// height: 100%;
+	background: #fafafa;
 }
 
 header{
@@ -96,14 +97,18 @@ header{
 	z-index: 999;
 }
 
+.article-viewport {
+	overflow:hidden;
+}
+
 article {
-	background: #fafafa;
+	
 
 	section.step {
 		background: #fafafa;
 		height:100%;
 		position: relative;
-		@include box-shadow(0 -6px 6px #aaa);
+		@include box-shadow(0 -6px 6px #ccc);
 
 		&.folded {
 			overflow: hidden;
@@ -256,16 +261,20 @@ article {
 		@include transition (top 0.4s ease-out 0.8s);
 	}
 
-	#step2, #step3 {
+	#step2, #step3, #step4 {
+
+		height: 0;
 		top: 20px;
 		opacity: 0;
 	}
 
 	#step1.folded + #step2, 
-	#step1.folded + #step2.folded + #step3 {
+	#step1.folded + #step2.folded + #step3,
+	#step1.folded + #step2.folded + #step3.folded + #step4{
+		height: auto;
 		top: -10px;
 		opacity: 1;
-		@include transition (all 0.4s ease-out 0.8s);
+		@include transition (top 0.4s ease-out 0.8s, opacity 0.4s ease-out 0.8s);
 	}
 }
 
@@ -318,7 +327,7 @@ article {
 					top: 0;
 					left: 90px;
 				}
-					
+
 			}
 
 			.circ {
@@ -328,55 +337,96 @@ article {
 			}
 
 			.events {
-					// background-color: transparent;
-					@include box-shadow ( 0 0 8px #ccc);
-					
+				padding-bottom: 10px;
+				@include box-shadow ( 0 0 8px #ccc);
+
+				@media (max-width: 560px) {
+					float: none !important;
+					margin-top: 0;
+					width: 100% !important;
+
+					&:before {
+						border-color: transparent transparent white transparent !important;
+						left: 12px !important; 
+						top: -12px !important; 
+					}
+				}
+				@media (min-width: 561px) and (max-width: 767px) {
+					float: left !important;
+					left: 90px;
+				}
+
+				img {
+					width: 48px; 
+					height: 48px;
+
 					@media (max-width: 560px) {
-						float: none !important;
-						margin-top: 0;
-						width: 100% !important;
-
-						&:before {
-							border-color: transparent transparent white transparent !important;
-							left: 12px !important; 
-							top: -12px !important; 
-						}
-					}
-					@media (min-width: 561px) and (max-width: 767px) {
-						float: left !important;
-						left: 90px;
-					}
-					
-					img {
-						width: 48px; 
-						height: 48px;
-
-						@media (max-width: 560px) {
-							display: none;
-						}
-
+						display: none;
 					}
 
-					
+				}
 
-					.events-body {
-						p {
-							font-size: 0.9em;
-							padding-right: 1em;
+				.events-body {
+					p {
+						font-size: 0.9em;
+						padding-right: 1em;
+						margin-bottom: 0;
+						position: relative;
+						
+						max-height: 2.8em;
+
+						@include transition(max-height 0.2s ease-out 0s);
+
+						.mask {
+							position: absolute;
+							bottom: 0;
+							width: 100%;
+							height: 1.5em;
+							opacity: 1;
+							background: -moz-linear-gradient(top,  rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%); /* FF3.6+ */
+							background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(255,255,255,1))); /* Chrome,Safari4+ */
+							background: -webkit-linear-gradient(top,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%); /* Chrome10+,Safari5.1+ */
+							background: -o-linear-gradient(top,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%); /* Opera 11.10+ */
+							background: -ms-linear-gradient(top,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%); /* IE10+ */
+							background: linear-gradient(to bottom,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%); /* W3C */
+							filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */
+							@include transition(opacity 0.5s ease 0);
 						}
 					}
 				}
-			}
 
-			@media (min-width: 768px) {
-				dd.pos-right {
-					.time {
-						margin-left: auto;
-						left: auto;
-						right: 50%;
+				&:not(.expanded):hover {
+					cursor: pointer;
+
+					p{
+						max-height: 6.5em;
+						@include transition(max-height 0.2s ease-out 0.6s);
+					}
+				}
+
+				&.expanded {
+					p {
+						max-height: 40em;
+						@include transition(max-height 0.2s ease-out 0s);
+
+						.mask {
+							opacity: 0;
+							@include transition(opacity 0.5s ease 0);
+						}
 					}
 				}
 			}
 		}
+
+		@media (min-width: 768px) {
+			dd.pos-right {
+				.time {
+					margin-left: auto;
+					left: auto;
+					right: 50%;
+				}
+			}
+		}
 	}
+}
 
