@@ -1,8 +1,30 @@
 $(document).ready(function(){
-     $("html,body").animate({scrollTop: 0}, 400);
+	$("html,body").animate({scrollTop: 0}, 400);
 });
-
+var SHAOPENG_LINKIEDIN_ID = 'qC72fmJGlB';
 var appModule = angular.module('tagdemo', []);
+
+appModule.controller('AppController', ['$scope', '$rootScope', 'TagService', function ($scope, $rootScope, TagService) {
+	
+	$scope.getLinkedInData = function() {
+		IN.API.Profile()
+		.ids(SHAOPENG_LINKIEDIN_ID)
+		.fields(["id", "firstName", "lastName", "pictureUrl","headline","publicProfileUrl", 'skills', 'positions'])
+		.result(function(result) {
+			profile = result.values[0];
+			
+			TagService.loadProfile(profile);
+		});
+	}
+
+	$scope.$on('PROFILE', function(event, data) {
+		$scope.$apply(function() {
+			$scope.positions = TagService.positions;	
+			$scope.profile = TagService.profile;		
+		});
+	})
+
+}]);
 
 appModule.controller('UIController', ['$scope', '$rootScope', 'TagService', 'RandomImageGenerator',
 	function ($scope, $rootScope, TagService, RandomImageGenerator) {
@@ -74,7 +96,7 @@ appModule.controller('UIController', ['$scope', '$rootScope', 'TagService', 'Ran
 
 				setTimeout(function() {
 					console.log('1s after getTags data: ', data);
-			
+
 					$scope.tagLoadPercentage = 100;
 					clearInterval(tagLoadInterval);
 					$scope.completeSection(2);
@@ -118,7 +140,7 @@ appModule.controller('UIController', ['$scope', '$rootScope', 'TagService', 'Ran
 
 				setTimeout(function() {
 					console.log('1s after getTags data: ', data);
-			
+
 					$scope.advLoadPercentage = 100;
 					clearInterval(advLoadInterval);
 					// $scope.completeSection(3);
@@ -162,7 +184,9 @@ appModule.controller('UIController', ['$scope', '$rootScope', 'TagService', 'Ran
 	}]);
 
 
-appModule.service('TagService', ['$http', function ($http) {
+appModule.service('TagService', ['$http', '$rootScope', function ($http, $rootScope) {
+	var that = this;
+
 	this.getTags = function() {
 		var promise = $http.get('api/tags.json').then(function(response) {
 			return response.data;
@@ -175,6 +199,53 @@ appModule.service('TagService', ['$http', function ($http) {
 			return response.data;
 		});
 		return promise;
+	}
+
+	this.loadSkills = function(INSkills) {
+		that.skills = INSkills;
+	}
+
+	this.loadProfile = function(INProfile) {
+		that.profile = INProfile;
+		that.positions = groupPositionByYear(INProfile.positions);		
+		$rootScope.$broadcast('PROFILE', null)
+	}
+
+	function groupPositionByYear(INPositions) {
+		var positions = INPositions.values || [];
+		if(angular.isArray(positions)) {
+			var a = [];
+			var even = 0;
+			positions.forEach(function(position, index, array) {
+				
+				if (a.length === 0) {
+					//push this year first
+					if(position.startDate.year !== new Date().getFullYear()) {
+						a.push({mark: new Date().getFullYear()});
+					}
+					//on the first position, push a year mark first
+					a.push({mark: position.startDate.year});
+					position.even = even;
+					a.push(position);
+					even = 1 - even;
+				}
+				else {
+					//second one and on, compare with the previous one,					
+					var lastPosition = a[a.length - 1];
+					//if it starts in the new year, then push a year mark first
+					if (lastPosition.startDate.year !== position.startDate.year) {
+						a.push({mark: position.startDate.year});
+
+					}
+					//if it is in the same year, just push the position
+					position.even = even;
+					a.push(position);
+					even = 1 - even;
+				}
+			});
+
+			return a;
+		}
 	}
 	
 }]);
@@ -238,3 +309,70 @@ appModule.directive('fadeInOnLoad', ['$rootScope', function ($rootScope) {
 	};
 }]);
 
+appModule.filter('intToMonth', function(){
+	return function(input) {
+		var map = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+		input = parseInt(input);
+		if (input > 0 && input < 13) {
+			return map[input - 1];
+		}
+		return '';
+	}
+});
+
+appModule.filter('forHowLong', function(){
+	return function(position) {
+		if (position.isCurrent) {
+			// return 'till now'
+			var now = new Date();
+
+			position.endDate = {
+				year: now.getFullYear(),
+				month: now.getMonth() + 1
+			}
+		}
+		
+		if (position.startDate && position.endDate) {
+			var yearLong = position.endDate.year - position.startDate.year,
+				monthLong = position.endDate.month - position.startDate.month;
+			
+			if (monthLong < 0) {
+				var totalLongInMonth = yearLong * 12 + monthLong;
+				yearLong = Math.floor(totalLongInMonth / 12);
+				monthLong = 12 + monthLong;
+			}
+
+			var yearUnit = yearLong > 1 ? 'years' : 'year',
+				monthUnit = monthLong > 1 ? 'months' : 'month';
+
+			var yearString = yearLong > 0 ? yearLong + ' ' + yearUnit + ' ' : '',
+				monthString = monthLong > 0? monthLong + ' ' + monthUnit : '';
+
+			var wholeString = yearString + monthString;
+
+			return wholeString;
+		}
+		return '';
+	}
+});
+
+appModule.directive('breakAtNumber', [function () {
+	return {
+		restrict: 'A',
+		replace: true,
+		scope: {
+			content: '@'
+		},
+		link: function (scope, element, attrs) {
+
+			//linkedin API will remove line breaks, here we add them back in before "...(n)" where n > 1
+			attrs.$observe('content', function(value){
+				var htmlString = value.replace(/\s+\(\d*\)/g, function(v) {
+					return ' <br>' + v;
+				});
+				element.html(htmlString);
+			});		
+				
+		}
+	};
+}]);
