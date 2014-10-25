@@ -4,13 +4,14 @@
   <title>Shaopeng Zhang</title>
   <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.css">
   <link rel="stylesheet" href="bootflat/css/bootflat.css">
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="assets/styles/main.css">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <script type="text/javascript" src="http://platform.linkedin.com/in.js">
   api_key: 758va66jwo20ou
   authorize: true
   </script>
-
+<!--  -->
 </head>
 
 <body id="appBody" ng-controller="AppController">
@@ -34,7 +35,7 @@
           <div class="result-viewport transparent-first {{visible('image') && 'visible'}}">
             <img ng-src="{{imgUrl}}" class="result-content" alt="Image to be analyzed" fade-in-on-load>
             <p class="text-lg">Hello! My name is Shaopeng Zhang. I am a front end developer, a user experience designer, and a project manager. </p>
-            <p>{{summary}}</p>
+            <p class="text-left" break-at-n content="{{summary}}"></p>
           </div>
 
 
@@ -66,7 +67,7 @@
                         <div class="events-body">
                           <h4 class="events-heading">{{edu.degree}}, {{edu.fieldOfStudy}}</h4>
                           <h4 class="events-heading">{{edu.schoolName}}</h4>
-                          <p break-at-number content="{{edu.notes}}"></p>
+                          <p break-at-n content="{{edu.notes}}"></p>
                         </div>
                       </div>
                     </dd>
@@ -114,7 +115,7 @@
 
       <section id="step4" class="step text-center" ng-class="{'folded': completedSection >= 4}">
         <div class="content">
-          <h2><a class="btn btn-primary btn-lg" ng-click="scrollToSection(4); $event.stopPropagation(); getJobs();">Jobs</a></h2>
+          <h2><a class="btn btn-primary btn-lg" ng-click="scrollToSection(4); $event.stopPropagation(); getJobs();">Work I have done...</a></h2>
           <div load-progress-icon iconclass="glyphicon glyphicon-briefcase" progress="{{jobLoadPercentage}}"></div>
           <div class="row transparent-first {{visible('jobs') && 'visible'}}">
             <div class="col-md-12">
@@ -129,13 +130,14 @@
                       <div class="circ"></div>
                       <div class="time">{{p.startDate.month | intToMonth}}, {{p | forHowLong}}</div>
                       <div class="events" click-add-class toggleclass="expanded">
-                        <div class="pull-left">
-                          <img class="events-object img-rounded" ng-src="{{profile.pictureUrl}}">
+                        <div class="pull-left logo-container">
+                          <span class="vertical-helper"></span>
+                          <img class="events-object img-rounded" ng-src="{{p.logoUrl}}">
                         </div>
                         <div class="events-body">
                           <h4 class="events-heading">{{p.title}}</h4>
                           <h4 class="events-heading">{{p.company.name}}</h4>
-                          <p break-at-number content="{{p.summary}}"></p>
+                          <p break-at-n content="{{p.summary}}"></p>
                         </div>
                       </div>
                     </dd>

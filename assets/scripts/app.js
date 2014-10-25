@@ -4,24 +4,52 @@ $(document).ready(function(){
 var SHAOPENG_LINKIEDIN_ID = 'qC72fmJGlB';
 var appModule = angular.module('tagdemo', []);
 
-appModule.controller('AppController', ['$scope', '$rootScope', 'TagService', function ($scope, $rootScope, TagService) {
+appModule.controller('AppController', ['$scope', '$rootScope', 'TagService', '$q', function ($scope, $rootScope, TagService, $q) {
 
-    $scope.getLinkedInData = function() {
-        IN.API.Profile()
-        .ids(SHAOPENG_LINKIEDIN_ID)
-        .fields(["id", "firstName", "lastName", 'summary', 'educations', "pictureUrl","headline","publicProfileUrl", 'skills', 'positions'])
-        .result(function(result) {
-            console.log(result);
-            profile = result.values[0];
-            
-            TagService.loadProfile(profile);
-        });
+    function asyncGreet(name) {
+      var deferred = $q.defer();
+      var okToGreet = function(name) {
+        return name === 'Robin Hood';
+    }
+    setTimeout(function() {
+        deferred.notify('About to greet ' + name + '.');
+
+        if (okToGreet(name)) {
+          deferred.resolve('Hello, ' + name + '!');
+      } else {
+          deferred.reject('Greeting ' + name + ' is not allowed.');
+      }
+  }, 5000);
+
+    return deferred.promise;
+}
+
+var promise = asyncGreet('Robin Hood');
+promise.then(function(greeting) {
+  console.log('Success: ' + greeting);
+}, function(reason) {
+  console.log('Failed: ' + reason);
+}, function(update) {
+  console.log('Got notification: ' + update);
+});
 
 
-        IN.API.Raw('/people/id=qC72fmJGlB:(first-name,last-name,picture-url,industry,positions:(id,title,summary,start-date,end-date,is-current,company:(id,name,logo-url)))')
-        .result(function(results) {
-            console.log(results);
-        });
+$scope.getLinkedInData = function() {
+    IN.API.Profile()
+    .ids(SHAOPENG_LINKIEDIN_ID)
+    .fields(["id", "firstName", "lastName", 'summary', 'educations', "pictureUrl","headline","publicProfileUrl", 'skills', 'positions'])
+    .result(function(result) {
+        console.log(result);
+        profile = result.values[0];
+
+        TagService.loadProfile(profile);
+    });
+
+
+    IN.API.Raw('/people/id=qC72fmJGlB:(first-name,last-name,picture-url,industry,positions:(id,title,summary,start-date,end-date,is-current,company:(id,name,logo-url)))')
+    .result(function(results) {
+        console.log(results);
+    });
 
             //3461 pitt, 598332990 scr, 1043 Siemens
             IN.API.Raw('/companies/id=3461:(id,name,logo-url)')
@@ -71,7 +99,7 @@ appModule.controller('UIController', ['$scope', '$rootScope', 'TagService', 'Ran
         }
 
         $scope.tagBaseHeight = function(value) {
-            return Math.min(28, 16 + value * 48);
+            return Math.min(28, 16 + value * 32);
         }
 
         $scope.completeSection = function(step) {
@@ -242,7 +270,7 @@ appModule.controller('UIController', ['$scope', '$rootScope', 'TagService', 'Ran
     }]);
 
 
-appModule.service('TagService', ['$http', '$rootScope', function ($http, $rootScope) {
+appModule.service('TagService', ['$http', '$rootScope', '$q', function ($http, $rootScope, $q) {
     var that = this;
 
     this.getTags = function() {
@@ -261,9 +289,17 @@ appModule.service('TagService', ['$http', '$rootScope', function ($http, $rootSc
 
     this.loadProfile = function(INProfile) {
         that.profile = INProfile;
-        that.positions = groupPositionByYear(INProfile.positions);  
-        that.skills = flattenSkills(INProfile.skills)   ;
+        // that.positions = groupPositionByYear(INProfile.positions);  
+
+        that.skills = flattenSkills(INProfile.skills);
         that.educations = INProfile.educations.values;
+        
+        console.log(that.positions);
+        getCompanyLogos(INProfile.positions).then(function(result){
+            console.log(result);
+            that.positions = groupPositionByYear(result);
+            console.log(that.positions);
+        });
 
         $rootScope.$broadcast('PROFILE', null)
     }
@@ -283,8 +319,51 @@ appModule.service('TagService', ['$http', '$rootScope', function ($http, $rootSc
         return a;
     }
 
-    function groupPositionByYear(INPositions) {
+    function asyncLogoUrl(id) {
+        var deferred = $q.defer();
+
+        IN.API.Raw('/companies/id=' + id + ':(id,name,logo-url)')
+        .result(function(results) {
+            if (results.logoUrl) {
+                // position.logoUrl = results.logoUrl;
+                deferred.resolve(results);
+            }
+            else {
+                deferred.reject(results);    
+            }
+            
+        });
+
+        return deferred.promise;
+    }
+
+    function getCompanyLogos(INPositions) {
+        var deferred = $q.defer();
+
         var positions = INPositions.values || [];
+        var b = [];
+        positions.forEach(function(position, index, array) {
+            if(position.company && position.company.id) {
+                var promise = asyncLogoUrl(position.company.id);
+                var newPromise = promise.then(function(success) {
+                    position.logoUrl = success.logoUrl;
+                    return position;
+                });
+                b.push(newPromise);
+            }
+        });
+
+        $q.all(b).then(function(result) {
+            // console.log('---all---', result);
+            // console.log('---all---', angular.toJson(result, true));
+            deferred.resolve(result);
+        });
+
+        return deferred.promise;
+    }
+
+    function groupPositionByYear(positionsArray) {
+        var positions = positionsArray || [];
         var a = [];
 
         if(angular.isArray(positions)) {
@@ -450,7 +529,7 @@ appModule.filter('forHowLong', function(){
     }
 });
 
-appModule.directive('breakAtNumber', [function () {
+appModule.directive('breakAtN', [function () {
     return {
         restrict: 'A',
         replace: true,
@@ -461,12 +540,16 @@ appModule.directive('breakAtNumber', [function () {
 
             //linkedin API will remove line breaks, here we add them back in before "...(n)" where n > 1
             attrs.$observe('content', function(value){
-                var htmlString = value.replace(/\s+\(\d*\)/g, function(v) {
-                    return ' <br>' + v;
-                });
-                element.html(htmlString);
-                element.append('<div class="mask"></div>');
-            });     
+                // var htmlString = value.replace(/\s+\(\d*\)/g, function(v) {
+                //     return ' <br>' + v;
+                // });
+            var htmlString = value.replace(/\n/g, function(v) {
+                return ' <br>';
+            });
+
+            element.html(htmlString);
+            element.append('<div class="mask"></div>');
+        });     
 
         }
     };

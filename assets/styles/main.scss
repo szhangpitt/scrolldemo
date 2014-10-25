@@ -29,8 +29,8 @@
 // }
 
 .glyph-progress {
-	height: 128px;
-	width: 128px;
+	height: 96px;
+	width: 96px;
 	margin: 15px auto;
 	position: relative;
 
@@ -45,6 +45,10 @@
 		.glyphicon {
 			margin: 0 !important;
 		}
+		.glyphicon {
+				font-size: 96px;
+				margin: 48px;
+			}
 	}
 
 	.bg {  
@@ -122,10 +126,7 @@ article {
 				margin-bottom: 30px;
 			}
 
-			.glyphicon {
-				font-size: 128px;
-				margin: 48px;
-			}
+			
 
 			.form-group {
 				position: relative;
@@ -144,6 +145,12 @@ article {
 
 			.btn-lg {
 				font-size: 42px;
+				@media (max-width: 767px) and (min-width: 561px) {
+					font-size: 36px;
+				}
+				@media (max-width: 560px) {
+					font-size: 18px;
+				}
 			}
 
 			.text-lg {
@@ -180,6 +187,7 @@ article {
 
 .adv-cloud {
 	li {
+		font-family: monospace, "Open Sans";
 		list-style-type: none;
 		display: inline-block;
 		margin: 8px 24px;
@@ -188,11 +196,13 @@ article {
 		top: 10px;
 
 		@include transition (top 0.4s ease-out);
-		
-		@include animation (twinkle 5s infinite);
+
+		&.visible {
+			@include animation (twinkle 5s infinite);
+		}		
 
 		&:hover {
-			@include transform (scale(1.14));
+			// @include transform (scale(1.14));
 			@include transition (transform 0.4s ease-out);
 		}
 	}
@@ -285,6 +295,7 @@ article {
 			@media (max-width: 560px) {
 				left: 50%;
 				top: 130px;
+				bottom: 20px;
 			}
 
 			@media (min-width: 561px) {
@@ -355,10 +366,24 @@ article {
 					float: left !important;
 					left: 90px;
 				}
+				
+				.logo-container{
+					height: 48px;
+					margin-right: 10px;
 
+					.vertical-helper{
+						height: 100%;
+						display: inline-block;
+						vertical-align: middle;
+					}
+					img {
+						vertical-align: middle;
+						margin-right: 0;
+					}
+				}
 				img {
 					width: 48px; 
-					height: 48px;
+					height: auto;
 
 					@media (max-width: 560px) {
 						display: none;
@@ -367,6 +392,9 @@ article {
 				}
 
 				.events-body {
+					.events-heading {
+						margin-bottom: 5px;
+					}
 					p {
 						font-size: 0.9em;
 						padding-right: 1em;
