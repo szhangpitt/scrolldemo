@@ -81,11 +81,25 @@
 	margin-top: 32px;
 }
 
-.result-viewport {
+.aboutme-viewport {
+	font-size: 1em;
 	img {
-		max-width: 100%;
-		max-height: 300px;
+		max-width: 160px;
+		padding-top: 15px;
+
+		// float: left;
 	}
+	.intro {
+		font-size: 1em;
+
+		.headline{
+			font-size: 1em;
+		}
+		.summary{
+			font-size: 1em;
+		}
+	}
+
 }
 
 html, body{
@@ -280,10 +294,15 @@ article {
 		opacity: 0;
 	}
 
-	#step0{
+	#step0 {
 		height: auto;
 		opacity: 1;
 		@include box-shadow(none);
+		margin-bottom: 40px;
+	}
+
+	#step1 {
+		// top: 0;
 	}
 
 	.step.folded {

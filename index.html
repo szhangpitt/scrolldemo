@@ -19,7 +19,7 @@
 
 
   <header>
-    <h3>Proud of yourself</h3>
+    <!-- <h3>Proud of yourself</h3> -->
 
 </header>
 
@@ -29,22 +29,27 @@
           <div class="content">
 
               <script type="in/Login" data-onAuth="loadData">
-              Hello, <?js= firstName ?> <?js= lastName ?>.
+             
               </script>
+              
+              <div load-progress-icon iconclass="fa fa-linkedin-square glyphicon" progress="{{loadPercentage.linkedIn}}"></div>
 
-              <div load-progress-icon iconclass="fa fa-linkedin-square glyphicon" progress="{{linkedInLoadPercentage}}"></div>
+              <h1 class="transparent-first {{visible('linkedIn') && 'visible'}}">{{profile.id === SHAOPENG_LINKIEDIN_ID ? '' : 'Hello'}} {{profile.firstName}} {{profile.lastName}}</h1>
+              
 
           </div>
       </section>
       <section id="step1" class="step text-center" ng-class="{'folded': completedSection >= 1}">
         <div class="content" >
-          <h2><a class="btn btn-primary btn-lg" ng-click="scrollToSection(1);inputRandomImage()">Who's there?</a></h2>           
-          <div load-progress-icon iconclass="glyphicon glyphicon-picture" progress="{{imageLoadPercentage}}"></div>
+          <h2><a class="btn btn-primary btn-lg" ng-click="scrollToSection(1);displaySectionContent(1, 'summary')">About me...</a></h2>           
+          <div load-progress-icon iconclass="glyphicon glyphicon-user" progress="{{loadPercentage.summary}}"></div>
 
-          <div class="result-viewport transparent-first {{visible('image') && 'visible'}}">
-            <img ng-src="{{imgUrl}}" class="result-content" alt="Image to be analyzed" fade-in-on-load>
-            <p class="text-lg">Hello! My name is Shaopeng Zhang. I am a front end developer, a user experience designer, and a project manager. </p>
-            <p class="text-left" break-at-n content="{{summary}}"></p>
+          <div class="aboutme-viewport row transparent-first {{visible('summary') && 'visible'}}">
+            <img ng-src="{{profile.pictureUrls.values[0]}}" class="col-sm-2 col-sm-offset-1 col-lg-2 col-lg-offset-2">
+            <div class="intro col-sm-8 col-lg-6 text-left">
+                <h4 class="headline text-lg">{{profile.headline}}</h4> 
+                <p class="text-left" break-at-n content="{{summary}}"></p>
+            </div>
         </div>
 
 
@@ -54,10 +59,10 @@
 
 <section id="step2" class="step text-center" ng-class="{'folded': completedSection >= 2}">
     <div class="content">
-      <h2><a class="btn btn-lg btn-primary" ng-click="scrollToSection(2);$event.stopPropagation();getTags();" >What do I know?</a></h2>
-      <div load-progress-icon iconclass="glyphicon glyphicon-book" progress="{{tagLoadPercentage}}" reverse="true"></div>
+      <h2><a class="btn btn-lg btn-primary" ng-click="scrollToSection(2);displaySectionContent(2, 'educations')" >What do I know?</a></h2>
+      <div load-progress-icon iconclass="glyphicon glyphicon-book" progress="{{loadPercentage.educations}}" reverse="true"></div>
 
-      <div class="row education transparent-first {{visible('tag') && 'visible'}}">
+      <div class="row education transparent-first {{visible('educations') && 'visible'}}">
           <div class="col-md-12">
               <div class="timeline text-left">
                 <dl>
@@ -66,7 +71,7 @@
                 </dt>
                 <div ng-repeat="edu in educations track by $index">                    
                     <dt ng-if="edu.id">{{edu.endDate.year}}</dt>
-                    <dd ng-if="edu.id" class="pos-{{$even ? 'right' : 'left'}} clearfix transparent-first {{visible('tag') && 'visible'}}" ng-style="{'transition': 'opacity 0.4s ease-out' + ($index * 0.2) + 's'}">
+                    <dd ng-if="edu.id" class="pos-{{$even ? 'right' : 'left'}} clearfix transparent-first {{visible('educations') && 'visible'}}" ng-style="{'transition': 'opacity 0.4s ease-out' + ($index * 0.2) + 's'}">
                       <div class="circ"></div>
                       <div class="time">{{edu.startDate.year}} - {{edu.endDate.year || 'Present'}}</div>
                       <div class="events" click-add-class toggleclass="expanded">
@@ -89,7 +94,7 @@
 
 </div>
 
-<div class="row tag-rank transparent-first {{visible('tag') && 'visible'}}" ng-repeat="tag in tags | orderBy: 'value': true" >
+<!-- <div class="row tag-rank transparent-first {{visible('tag') && 'visible'}}" ng-repeat="tag in tags | orderBy: 'value': true" >
     <div class="col-xs-6 text-right">
       <div ng-style="{'font-size': tagBaseHeight(tag.value) + 'px', 'line-height': '1.5'}">{{tag.name}}</div>          
   </div>
@@ -102,7 +107,7 @@
     </div>
 </ul>
 </div>
-</div>
+</div> -->
 
 
 </div>
@@ -111,10 +116,10 @@
 
 <section id="step3" class="step text-center" ng-class="{'folded': completedSection >= 3}">
     <div class="content" >
-      <h2><a class="btn btn-lg btn-primary" ng-click="scrollToSection(3); $event.stopPropagation();getAdvs();" >What skills do I have?</a></h2>
-      <div load-progress-icon iconclass="glyphicon glyphicon-globe" progress="{{advLoadPercentage}}"></div>
+      <h2><a class="btn btn-lg btn-primary" ng-click="scrollToSection(3);displaySectionContent(3, 'skills')" >What skills do I have?</a></h2>
+      <div load-progress-icon iconclass="glyphicon glyphicon-globe" progress="{{loadPercentage.skills}}"></div>
       <ul class="adv-cloud">
-        <li ng-repeat="adv in skills" ng-style="{'font-size': (16 + adv.value * 24) + 'px', 'line-height': '1.5', 'transition': 'top 0.4s ease ' +  (adv.value) * 3 + 's' + ',' + 'opacity 0.4s ease ' +  adv.value * 3 + 's' + ',' + 'transform 0.4s ease ', 'top': (advLoadPercentage === 100) && '0' || '10px', 'animation-delay': (10 + adv.value * 6) + 's' }" class="transparent-first {{visible('adv') && 'visible'}}">{{adv.name}}</li>
+        <li ng-repeat="skill in skills" ng-style="{'font-size': (16 + skill.value * 24) + 'px', 'line-height': '1.5', 'transition': 'top 0.4s ease ' +  (skill.value) * 3 + 's' + ',' + 'opacity 0.4s ease ' +  skill.value * 3 + 's' + ',' + 'transform 0.4s ease ', 'top': (loadPercentage.skills === 100) && '0' || '10px', 'animation-delay': (10 + skill.value * 6) + 's' }" class="transparent-first {{visible('skills') && 'visible'}}">{{skill.name}}</li>
     </ul>
     
     <!-- -->
@@ -124,9 +129,9 @@
 
 <section id="step4" class="step text-center" ng-class="{'folded': completedSection >= 4}">
     <div class="content">
-      <h2><a class="btn btn-primary btn-lg" ng-click="scrollToSection(4); $event.stopPropagation(); getJobs();">Work I have done...</a></h2>
-      <div load-progress-icon iconclass="glyphicon glyphicon-briefcase" progress="{{jobLoadPercentage}}"></div>
-      <div class="row transparent-first {{visible('jobs') && 'visible'}}">
+      <h2><a class="btn btn-primary btn-lg" ng-click="scrollToSection(4); displaySectionContent(4, 'positions')">Work I have done...</a></h2>
+      <div load-progress-icon iconclass="glyphicon glyphicon-briefcase" progress="{{loadPercentage.positions}}"></div>
+      <div class="row transparent-first {{visible('positions') && 'visible'}}">
         <div class="col-md-12">
           <div class="timeline text-left">
             <dl>
@@ -135,7 +140,7 @@
             </dt>
             <div ng-repeat="p in positions track by $index">                    
                 <dt ng-if="p.mark">{{p.mark}}</dt>
-                <dd ng-if="p.id" class="pos-{{p.even ? 'right' : 'left'}} clearfix transparent-first {{visible('jobs') && 'visible'}}" ng-style="{'transition': 'opacity 0.4s ease-out' + ($index * 0.2) + 's'}">
+                <dd ng-if="p.id" class="pos-{{p.even ? 'right' : 'left'}} clearfix transparent-first {{visible('positions') && 'visible'}}" ng-style="{'transition': 'opacity 0.4s ease-out' + ($index * 0.2) + 's'}">
                   <div class="circ"></div>
                   <div class="time">{{p.startDate.month | intToMonth}}, {{p | forHowLong}}</div>
                   <div class="events" click-add-class toggleclass="expanded">
@@ -157,7 +162,7 @@
 </div>
 </div>
 </div>
-<a href="." class="btn  btn-default reset transparent-first {{visible('adv') && 'visible'}}">Do it again!</a>
+<a href="." class="btn  btn-default reset transparent-first {{visible('positions') && 'visible'}}">Do it again!</a>
 </div>
 </section>
 

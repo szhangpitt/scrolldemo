@@ -4,7 +4,9 @@ var rename = require('gulp-rename');
 var sass = require('gulp-sass');
 
 
-var jsSource = ['./assets/scripts/app.js', './assets/scripts/tag.js'];
+var jsSource = ['./assets/scripts/app.js', 
+                './assets/scripts/service.js', 
+                './assets/scripts/helper.js'];
 
 var libJSSource = ['./assets/libs/**/*.js'];
 
