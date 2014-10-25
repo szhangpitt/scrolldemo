@@ -215,6 +215,7 @@ article {
 
 	50% {
 		color: lighten($darkgray-dark, 60%);
+		// @include transform (scale(1.1));
 	}
 
 	100% {
