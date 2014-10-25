@@ -6,59 +6,17 @@ var appModule = angular.module('tagdemo', []);
 
 appModule.controller('AppController', ['$scope', '$rootScope', 'TagService', '$q', function ($scope, $rootScope, TagService, $q) {
 
-    function asyncGreet(name) {
-      var deferred = $q.defer();
-      var okToGreet = function(name) {
-        return name === 'Robin Hood';
-    }
-    setTimeout(function() {
-        deferred.notify('About to greet ' + name + '.');
 
-        if (okToGreet(name)) {
-          deferred.resolve('Hello, ' + name + '!');
-      } else {
-          deferred.reject('Greeting ' + name + ' is not allowed.');
-      }
-  }, 5000);
+    $scope.getLinkedInData = function() {
+        IN.API.Profile()
+        .ids(SHAOPENG_LINKIEDIN_ID)
+        .fields(["id", "firstName", "lastName", 'summary', 'educations', "pictureUrl","headline","publicProfileUrl", 'skills', 'positions'])
+        .result(function(result) {
+            console.log(result);
+            profile = result.values[0];
 
-    return deferred.promise;
-}
-
-var promise = asyncGreet('Robin Hood');
-promise.then(function(greeting) {
-  console.log('Success: ' + greeting);
-}, function(reason) {
-  console.log('Failed: ' + reason);
-}, function(update) {
-  console.log('Got notification: ' + update);
-});
-
-
-$scope.getLinkedInData = function() {
-    IN.API.Profile()
-    .ids(SHAOPENG_LINKIEDIN_ID)
-    .fields(["id", "firstName", "lastName", 'summary', 'educations', "pictureUrl","headline","publicProfileUrl", 'skills', 'positions'])
-    .result(function(result) {
-        console.log(result);
-        profile = result.values[0];
-
-        TagService.loadProfile(profile);
-    });
-
-
-    IN.API.Raw('/people/id=qC72fmJGlB:(first-name,last-name,picture-url,industry,positions:(id,title,summary,start-date,end-date,is-current,company:(id,name,logo-url)))')
-    .result(function(results) {
-        console.log(results);
-    });
-
-            //3461 pitt, 598332990 scr, 1043 Siemens
-            IN.API.Raw('/companies/id=3461:(id,name,logo-url)')
-            .result(function(results) {
-                console.log(results);
-            });
-
-
-        }
+            TagService.loadProfile(profile);
+        });
 
         $scope.$on('PROFILE', function(event, data) {
             $scope.$apply(function() {
@@ -67,13 +25,13 @@ $scope.getLinkedInData = function() {
                 $scope.summary = TagService.profile.summary;  
                 $scope.educations = TagService.educations;   
             });
-        })
-
-    }]);
+        });
+    }
+}]);
 
 appModule.controller('UIController', ['$scope', '$rootScope', 'TagService', 'RandomImageGenerator',
     function ($scope, $rootScope, TagService, RandomImageGenerator) {
-
+        $scope.linkedInLoadPercentage = 0;
         $scope.imageLoadPercentage = 0;
         $scope.tagLoadPercentage = 0;
         $scope.advLoadPercentage = 0;
@@ -81,10 +39,10 @@ appModule.controller('UIController', ['$scope', '$rootScope', 'TagService', 'Ran
         var imgLoadInterval, tagLoadInterval, advLoadInterval;
 
         $scope.visible = function(identifier) {
-            if (identifier === 'progress') {
+            /*if (identifier === 'progress') {
                 return  $scope.imageLoadPercentage > 0;
             }
-            else if (identifier === 'image') {
+            else*/ if (identifier === 'image') {
                 return $scope.imageLoadPercentage === 100;
             }
             else if (identifier === 'tag') {
@@ -107,7 +65,7 @@ appModule.controller('UIController', ['$scope', '$rootScope', 'TagService', 'Ran
         }
 
         $scope.resetAll = function(exceptImgUrl) {
-            $scope.completedSection = 0;
+            $scope.completedSection = -1;
             
             if(!exceptImgUrl){
                 $scope.imgUrl = null;
@@ -178,8 +136,18 @@ appModule.controller('UIController', ['$scope', '$rootScope', 'TagService', 'Ran
 
 
         $scope.$on('PROFILE', function(event, data) {
+            $scope.linkedInLoadPercentage = 100;
+            $scope.completeSection(0);
             $scope.skills = TagService.skills;
         });
+
+        $scope.$on('PROFILE_ALL', function(event, data) {
+            $scope.linkedInLoadPercentage = 100;
+            $scope.completeSection(0);
+        });
+
+
+
 
 
         $scope.getAdvs = function() {   
@@ -237,15 +205,12 @@ appModule.controller('UIController', ['$scope', '$rootScope', 'TagService', 'Ran
 
 
         $scope.inputRandomImage = function() {
-            // $scope.imgUrl = null;
             $scope.imgUrl = RandomImageGenerator.getShaopengUrl();
-            // $scope.$apply();
-
         }
 
         
         $rootScope.$on('ImageStartToLoad', function(event, imgNewSrc) {
-            $scope.resetAll(true);
+            //$scope.resetAll(true);
             $scope.imageLoadPercentage = 0;
             console.log('ImageStartToLoad');
 
@@ -266,6 +231,8 @@ appModule.controller('UIController', ['$scope', '$rootScope', 'TagService', 'Ran
 
             $scope.$apply();
         });
+
+
 
     }]);
 
@@ -299,9 +266,10 @@ appModule.service('TagService', ['$http', '$rootScope', '$q', function ($http, $
             console.log(result);
             that.positions = groupPositionByYear(result);
             console.log(that.positions);
+            $rootScope.$broadcast('PROFILE_ALL', null);
         });
 
-        $rootScope.$broadcast('PROFILE', null)
+        $rootScope.$broadcast('PROFILE', null);
     }
 
     function flattenSkills(INSkills) {
@@ -380,16 +348,6 @@ appModule.service('TagService', ['$http', '$rootScope', '$q', function ($http, $
                     //on the first position, push a year mark first
                     a.push({mark: position.startDate.year});
                     position.even = even;
-
-                    // if(position.company.id) {
-                    //     IN.API.Raw('/companies/id=' + position.company.id + ':(id,name,logo-url)')
-                    //     .result(function(results) {
-                    //         if (results.logoUrl) {
-                    //             position.logoUrl = results.logoUrl;
-                    //         }
-                    //         a.push(position);
-                    //     });
-                    // }
                     a.push(position);
                     even = 1 - even;
                 }
@@ -399,20 +357,10 @@ appModule.service('TagService', ['$http', '$rootScope', '$q', function ($http, $
                     //if it starts in the new year, then push a year mark first
                     if (lastPosition.startDate.year !== position.startDate.year) {
                         a.push({mark: position.startDate.year});
-
                     }
                     //if it is in the same year, just push the position
                     position.even = even;
                     a.push(position);
-                    // if(position.company.id) {
-                    //     IN.API.Raw('/companies/id=' + position.company.id + ':(id,name,logo-url)')
-                    //     .result(function(results) {
-                    //         if (results.logoUrl) {
-                    //             position.logoUrl = results.logoUrl;
-                    //         }
-                    //         a.push(position);
-                    //     });
-                    // }
                     
                     even = 1 - even;
                 }
@@ -521,10 +469,11 @@ appModule.filter('forHowLong', function(){
             var yearString = yearLong > 0 ? yearLong + ' ' + yearUnit + ' ' : '',
             monthString = monthLong > 0? monthLong + ' ' + monthUnit : '';
 
-            var wholeString = yearString + monthString;
+            var wholeString = yearString + monthString + (position.isCurrent ? ' till now' : '');
 
             return wholeString;
         }
+
         return '';
     }
 });

@@ -198,22 +198,28 @@ article section.step {
 
 .linear-scroll-animation {
   height: auto; }
-  .linear-scroll-animation #step1, .linear-scroll-animation #step2, .linear-scroll-animation #step3 {
-    top: 0px;
+  .linear-scroll-animation .step {
     -webkit-transition: top 0.4s ease-out 0.8s;
     -moz-transition: top 0.4s ease-out 0.8s;
-    transition: top 0.4s ease-out 0.8s; }
-  .linear-scroll-animation #step2, .linear-scroll-animation #step3, .linear-scroll-animation #step4 {
+    transition: top 0.4s ease-out 0.8s;
     height: 0;
     top: 20px;
     opacity: 0; }
-  .linear-scroll-animation #step1.folded + #step2, .linear-scroll-animation #step1.folded + #step2.folded + #step3, .linear-scroll-animation #step1.folded + #step2.folded + #step3.folded + #step4 {
+  .linear-scroll-animation #step0 {
     height: auto;
-    top: -10px;
     opacity: 1;
-    -webkit-transition: top 0.4s ease-out 0.8s, opacity 0.4s ease-out 0.8s;
-    -moz-transition: top 0.4s ease-out 0.8s, opacity 0.4s ease-out 0.8s;
-    transition: top 0.4s ease-out 0.8s, opacity 0.4s ease-out 0.8s; }
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none; }
+  .linear-scroll-animation .step.folded {
+    height: auto !important; }
+    .linear-scroll-animation .step.folded + .step {
+      height: 70em;
+      top: -10px;
+      opacity: 1;
+      -webkit-transition: top 0.4s ease-out 0.8s, opacity 0.4s ease-out 0.8s;
+      -moz-transition: top 0.4s ease-out 0.8s, opacity 0.4s ease-out 0.8s;
+      transition: top 0.4s ease-out 0.8s, opacity 0.4s ease-out 0.8s; }
 
 @media (max-width: 560px) {
   .timeline dl:before {
@@ -344,3 +350,16 @@ article section.step {
     margin-left: auto;
     left: auto;
     right: 50%; } }
+
+.IN-widget {
+  display: none; }
+  .IN-widget span[id*="logo"] {
+    font-size: 1em; }
+  .IN-widget span[id$="title"] {
+    font-size: 1em; }
+  .IN-widget span[id*="mark"] {
+    font-size: 1em; }
+  .IN-widget span[id*="title-text"] {
+    font-size: 1em; }
+  .IN-widget a {
+    font-size: 1em; }

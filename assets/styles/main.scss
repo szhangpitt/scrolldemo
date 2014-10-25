@@ -46,9 +46,9 @@
 			margin: 0 !important;
 		}
 		.glyphicon {
-				font-size: 96px;
-				margin: 48px;
-			}
+			font-size: 96px;
+			margin: 48px;
+		}
 	}
 
 	.bg {  
@@ -267,26 +267,37 @@ article {
 
 .linear-scroll-animation {
 	height: auto;
-	#step1, #step2, #step3 {
-		top: 0px;
+	// #step1, #step2, #step3 {
+	// 	top: 0px;
+	// 	@include transition (top 0.4s ease-out 0.8s);
+	// }
+
+	.step{
+		// top: 0px;
 		@include transition (top 0.4s ease-out 0.8s);
-	}
-
-	#step2, #step3, #step4 {
-
 		height: 0;
 		top: 20px;
 		opacity: 0;
 	}
 
-	#step1.folded + #step2, 
-	#step1.folded + #step2.folded + #step3,
-	#step1.folded + #step2.folded + #step3.folded + #step4{
+	#step0{
 		height: auto;
-		top: -10px;
 		opacity: 1;
-		@include transition (top 0.4s ease-out 0.8s, opacity 0.4s ease-out 0.8s);
+		@include box-shadow(none);
 	}
+
+	.step.folded {
+		height: auto !important;
+		
+		& + .step{
+			height: 70em;
+			top: -10px;
+			opacity: 1;
+			@include transition (top 0.4s ease-out 0.8s, opacity 0.4s ease-out 0.8s);
+		}
+	}
+
+
 }
 
 
@@ -456,6 +467,31 @@ article {
 				}
 			}
 		}
+	}
+}
+
+.IN-widget {
+	display: none;
+	
+	span[id*="logo"] {
+		font-size: 1em;
+	}
+	span[id$="title"] {
+		font-size: 1em;
+
+	}
+	span[id*="mark"] {
+		font-size: 1em;
+
+	}
+	span[id*="title-text"] {
+		font-size: 1em;
+
+	}
+
+	a {
+		font-size: 1em;
+
 	}
 }
 
