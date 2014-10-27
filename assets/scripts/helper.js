@@ -9,15 +9,34 @@ appModule.directive('loadProgressIcon', [function () {
             progress: '@', 
             reverse: '@'
         },
-        template: '<div class="glyph-progress"> \
+        template: '<div class="glyph-progress" ng-class="{\'reverse\': reverse}"> \
         <div class=" view-port" ng-class="{\'fg\': reverse, \'bg\': !reverse}"><span class="{{iconclass}}"></span></div>    \
-        <div class=" view-port" ng-class="{\'bg\': reverse, \'fg\': !reverse}" style="height: {{reverse && progress || (100 - progress)}}%"><span class="{{iconclass}}"></span></div>   \
+        <div class=" view-port" ng-class="{\'bg\': reverse, \'fg\': !reverse}"><span class="{{iconclass}}"></span></div>   \
         </div>',
-        link: function (scope, iElement, iAttrs) {
-
+        link: function (scope, element, attrs) {
+            scope.$watch('progress', function(newValue, oldValue) {
+                console.log('loadProgressIcon.progress = ', newValue, oldValue);
+                if(parseInt(newValue) === 100) {
+                    setTimeout(function(){
+                        element.addClass('loaded');
+                    },100)
+                    
+                }
+                else if(parseInt(newValue) === 0) {
+                    setTimeout(function(){
+                        element.removeClass('loaded');
+                    }, 100);
+                    
+                }
+            })
         }
     };
 }]);
+
+ /*template: '<div class="glyph-progress"> \
+        <div class=" view-port" ng-class="{\'fg\': reverse, \'bg\': !reverse}"><span class="{{iconclass}}"></span></div>    \
+        <div class=" view-port" ng-class="{\'bg\': reverse, \'fg\': !reverse}" style="height: {{reverse && progress || (100 - progress)}}%"><span class="{{iconclass}}"></span></div>   \
+        </div>',*/
 
 
 appModule.filter('intToMonth', function(){
@@ -106,4 +125,52 @@ appModule.directive('clickAddClass', [function () {
             })
         }
     };
+}]);
+
+appModule.directive('visibleOnMark', [function () {
+    return {
+        restrict: 'A',
+        scope: {
+            mark: '@'
+        },
+        link: function (scope, element, attrs) {
+            scope.$watch('mark', function(newValue, oldValue) {
+                if(newValue === 'true') {
+                    setTimeout(function() {
+                        element.addClass('visible');
+                    }, 100);
+                }
+                else {
+                    setTimeout(function() {
+                        element.removeClass('visible');
+                    }, 100);
+                }
+            });
+        }
+    };
 }])
+
+
+/*appModule.directive('twinkleTag', [function () {
+    return {
+        restrict: 'A',
+        scope: {
+            name: '@', 
+            value: '@'
+        },
+        link: function (scope, element, attrs) {
+            console.log('twinkleTag', scope.name, scope.value);
+            var name = scope.name,
+                value = parseInt(scope.value);
+
+            element.css({
+                'font-size': (16 + skill.value * 24) + 'px', 
+                'line-height': '1.5', 
+                'transition': 'top 0.4s ease ' +  (skill.value) * 3 + 's' + ',' + 'opacity 0.4s ease ' +  skill.value * 3 + 's' + ',' + 'transform 0.4s ease ', 
+                'top': (loadPercentage.skills === 100) && '0' || '10px', 
+                'animation-delay': (10 + skill.value * 6) + 's'
+            });
+
+        }
+    };
+}])*/

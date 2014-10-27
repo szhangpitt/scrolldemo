@@ -5,28 +5,6 @@
 	padding: 0;
 }
 
-// .article-viewport {
-// 	position: relative;
-// 	height: 90%;
-// 	overflow-y: scroll;
-// 	article {
-// 		position: relative;
-// 		@include transition (top 0.8s ease-out );
-// 	}
-
-// 	&.show-step-1 article {
-// 		top: -10px; 
-// 	}
-
-// 	&.show-step-2 article {
-// 		top: -50px; 
-// 	}
-
-// 	&.show-step-3 article {
-// 		top: -160px; 
-// 	}
-
-// }
 
 .glyph-progress {
 	height: 96px;
@@ -36,9 +14,9 @@
 
 	.view-port {
 		position: absolute;
-		left: 0;
-		top: 0;
-		bottom: 0;
+		// left: 0;
+		// top: 0;
+		// bottom: 0;
 		overflow: hidden;
 		margin: 0 !important;
 
@@ -60,11 +38,47 @@
 
 	.fg {
 		@include transition (height 0.8s ease-out );
-		.glyphicon {
-
-		}
-
 	}
+
+
+	&{
+		.bg {
+			height: 100%;
+		}
+		.fg {
+			height: 100%;
+		}
+	}
+
+	&.loaded {
+		.bg {
+			height: 100%;
+		}
+		.fg{
+			height: 0%;
+		}
+	}
+
+	&.reverse {
+		.fg {
+			height: 100%;
+		}
+		.bg {
+			height: 0%;
+		}
+	}
+	
+	&.reverse.loaded {
+		.fg{
+			height: 100%;
+		}
+		.bg{
+			height: 100%;
+		}
+	}
+
+
+
 }
 
 .transparent-first {
@@ -77,8 +91,11 @@
 	}
 }
 
-.reset {
+.top-space {
 	margin-top: 32px;
+}
+.top-space-lg {
+	margin-top: 64px;
 }
 
 .aboutme-viewport {
@@ -175,29 +192,6 @@ article {
 }
 
 
-.tag-rank {
-	li {
-		list-style-type: none;
-
-		&:hover {
-			font-weight: bold;
-		}
-	}
-	.progress {
-		background-color: transparent;
-		.progress-bar {
-			width: 0%;
-			@include radius (border-radius, 4px);
-			@include transition (width 0.4s ease-out 2s);
-		}
-		.progress-label {
-			position: absolute; 
-			left: 100%; 
-			color: #666; 
-			margin-left: 0.5em
-		}
-	}
-}
 
 .adv-cloud {
 	li {
@@ -209,10 +203,12 @@ article {
 		position: relative;
 		top: 10px;
 
-		@include transition (top 0.4s ease-out);
+		// @include transition (top 0.4s ease-out);
 
 		&.visible {
+			top: 0px;
 			@include animation (twinkle 5s infinite);
+			@include transition (top 0.4s ease-out, opacity 0.4s ease-out);
 		}		
 
 		&:hover {
@@ -237,47 +233,6 @@ article {
 	}
 }
 
-// We use this to creat animation effect.
-// Examples:
-// @include keyframes(move-the-object) {
-//   0%   { left: 100px; }
-//   100% { left: 200px; }
-// }
-// .object-to-animate {
-//   @include animation(move-the-object .5s 1);
-// } 
-
-.card-animation #step1 {
-	& + #step2 {
-		top: 0;
-		margin-top: 0;
-		@include transition (top 0.4s ease-out 0.1s);
-
-		& + #step3{
-			top: -90%;
-			margin-top: 0;              
-			@include transition (top 0.4s ease-out);
-		}
-	}
-
-	&.folded + #step2 {
-		top: -100%;
-		margin-top: 60px;
-		@include transition (top 0.4s ease-out);
-
-		& + #step3 {       
-			top: -100%;
-			margin-top: 0;
-			@include transition (top 0.4s ease-out);
-		}
-
-		&.folded + #step3 {
-			top: -200%;
-			margin-top: 60px;
-			@include transition (top 0.4s ease-out);
-		}
-	}
-}
 
 .linear-scroll-animation {
 	height: auto;
@@ -490,7 +445,7 @@ article {
 }
 
 .IN-widget {
-	display: none;
+	font-size: 1em;
 	
 	span[id*="logo"] {
 		font-size: 1em;

@@ -3,6 +3,11 @@ appModule.service('TagService', ['$http', '$rootScope', '$q', function ($http, $
     var that = this;
 
     this.SHAOPENG_LINKIEDIN_ID = 'qC72fmJGlB';
+
+    this.companyUrlMap = {};
+    this.companyUrlMap[1043] =  {id: 1043, logoUrl: "https://media.licdn.com/mpr/mpr/p/3/005/07b/00a/05def42.png", name: "Siemens"};
+    this.companyUrlMap[507720] = {id: 507720, logoUrl: "https://media.licdn.com/mpr/mpr/p/3/000/032/14c/0fad638.png", name: "Beijing Jiaotong University"} ;
+    this.companyUrlMap[3461] = {id: 3461, logoUrl: "https://media.licdn.com/mpr/mpr/p/7/000/2b5/1b3/37aeefe.png", name: "University of Pittsburgh"};
     
     this.getTags = function() {
         var promise = $http.get('api/tags.json').then(function(response) {
@@ -26,12 +31,12 @@ appModule.service('TagService', ['$http', '$rootScope', '$q', function ($http, $
         that.educations = INProfile.educations.values;
         
         console.log(that.profile);
-        /*getCompanyLogos(INProfile.positions).then(function(result){
+        getCompanyLogos(INProfile.positions).then(function(result){
             console.log(result);
             that.positions = groupPositionByYear(result);
             console.log(that.positions);
             $rootScope.$broadcast('PROFILE_ALL', null);
-        });*/
+        });
 
         $rootScope.$broadcast('PROFILE', null);
     }
@@ -51,20 +56,37 @@ appModule.service('TagService', ['$http', '$rootScope', '$q', function ($http, $
         return a;
     }
 
+    
+
     function asyncLogoUrl(id) {
         var deferred = $q.defer();
 
-        IN.API.Raw('/companies/id=' + id + ':(id,name,logo-url)')
-        .result(function(results) {
-            if (results.logoUrl) {
-                // position.logoUrl = results.logoUrl;
-                deferred.resolve(results);
-            }
-            else {
-                deferred.reject(results);    
-            }
-            
-        });
+        if(that.companyUrlMap[id]) {
+            var results = that.companyUrlMap[id];
+            deferred.resolve(results);
+            console.log('Yay! Saved one API call, found company object in cache: ', results);
+        }
+        else {
+            IN.API.Raw('/companies/id=' + id + ':(id,name,logo-url)')
+            .result(function(results) {
+                if (results.logoUrl) {
+                    // position.logoUrl = results.logoUrl;
+                    console.log('asyncLogoUrl', results);
+                    this.companyUrlMap[id] = results;
+                    deferred.resolve(results);
+                }
+                else {
+                    deferred.reject(results);    
+                }
+                
+            })
+            .error(function(error){
+                //in case of network error, throttle, etc.
+                console.error('asyncLogoUrl error: ', angular.toJson(error, true))
+                deferred.reject(error);
+            });            
+        }
+
 
         return deferred.promise;
     }

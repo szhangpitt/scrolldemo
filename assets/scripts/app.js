@@ -1,14 +1,18 @@
 $(document).ready(function(){
-    $('html,body').animate({scrollTop: 0}, 400);
+    setTimeout(function(){
+        $('html,body').animate({scrollTop: 0}, 400);
+    }, 400);
+    
 });
 // var SHAOPENG_LINKIEDIN_ID = 'qC72fmJGlB';
-var appModule = angular.module('tagdemo', []);
+var appModule = angular.module('tagdemo', ['ngRoute']);
 
-appModule.controller('AppController', ['$scope', '$rootScope', 'TagService', '$q', function ($scope, $rootScope, TagService, $q) {
+appModule.controller('AppController', ['$scope', '$rootScope', 'TagService', '$routeParams', function ($scope, $rootScope, TagService, $routeParams) {
 
     $scope.getLinkedInData = function() {
+        var linkedInId = getUrlVars()['view'] === 'me' && 'me' || TagService.SHAOPENG_LINKIEDIN_ID;
         IN.API.Profile()
-        .ids(TagService.SHAOPENG_LINKIEDIN_ID)
+        .ids(linkedInId)
         .fields(['id', 'firstName', 'lastName', 'summary', 'educations', 'pictureUrls::(original)','headline','publicProfileUrl', 'skills', 'positions', 'projects'])
         .result(function(result) {
             console.log(result);
@@ -16,6 +20,20 @@ appModule.controller('AppController', ['$scope', '$rootScope', 'TagService', '$q
 
             TagService.loadProfile(profile);
         });
+    }
+
+    // Read a page's GET URL variables and return them as an associative array.
+    function getUrlVars()
+    {
+        var vars = [], hash;
+        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+        for(var i = 0; i < hashes.length; i++)
+        {
+            hash = hashes[i].split('=');
+            vars.push(hash[0]);
+            vars[hash[0]] = hash[1];
+        }
+        return vars;
     }
 }]);
 
@@ -48,9 +66,20 @@ appModule.controller('UIController', ['$scope', '$rootScope', 'TagService',
         $scope.$on('PROFILE_ALL', function(event, data) {
             $scope.linkedInLoadPercentage = 100;
             $scope.completeSection(0);
-            $scope.$apply();
+            //$scope.$apply();
         });
 
+        $scope.findSchoolLogoUrlFromCompay = function(schoolName) {
+            var companyUrlMap = TagService.companyUrlMap;
+            for (key in companyUrlMap) {
+                var company = companyUrlMap[key];
+                console.log('look for: ', companyUrlMap[key]);
+                if(company.name && company.logoUrl && company.name === schoolName) {
+                    return company.logoUrl;
+                }
+            }
+            return false;
+        }
 
         $scope.displaySectionContent = function(section, contentProperty) {
             $scope.loadPercentage[contentProperty] = 0;
@@ -74,7 +103,23 @@ appModule.controller('UIController', ['$scope', '$rootScope', 'TagService',
             }
             return 100;
         }
+        
+        $scope.twinkleStyle = function(value, loadPercentage) {
+            var transitionString = 'top 0.4s ease ' +  (value * 3).toFixed(2) + 's' + ',' + 'opacity 0.4s ease ' +  value * 3 + 's' + ';';// + ',' + 'transform 0.4s ease ' + ';';
+            var animationDelayString = (10 + value * 6) + 's' + ';'; 
+            var styleString = 'font-size: ' + (16 + value * 12) + 'px' + ';' +
+            'line-height: ' + '1.5' + ';' +
+            /*'top: ' + (loadPercentage === 100) && '0' || '10px' + ';' +*/
+            '-webkit-transition: ' + transitionString +
+            '-moz-transition: ' + transitionString +
+            'transition: ' + transitionString +
+            '-webkit-animation-delay: ' + animationDelayString +
+            '-moz-animation-delay: ' + animationDelayString +
+            'animation-delay: ' + animationDelayString;
 
+            return styleString;
+
+        }
 
         $scope.tagBaseHeight = function(value) {
             return Math.min(28, 8 + value * 32);
