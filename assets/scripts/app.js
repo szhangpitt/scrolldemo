@@ -1,240 +1,152 @@
 $(document).ready(function(){
-     $("html,body").animate({scrollTop: 0}, 400);
+    setTimeout(function(){
+        $('html,body').animate({scrollTop: 0}, 400);
+    }, 400);
+    
 });
+// var SHAOPENG_LINKIEDIN_ID = 'qC72fmJGlB';
+var appModule = angular.module('tagdemo', ['ngRoute']);
 
-var appModule = angular.module('tagdemo', []);
+appModule.controller('AppController', ['$scope', '$rootScope', 'TagService', '$routeParams', function ($scope, $rootScope, TagService, $routeParams) {
 
-appModule.controller('UIController', ['$scope', '$rootScope', 'TagService', 'RandomImageGenerator',
-	function ($scope, $rootScope, TagService, RandomImageGenerator) {
+    $scope.getLinkedInData = function() {
+        var linkedInId = getUrlVars()['view'] === 'me' && 'me' || TagService.SHAOPENG_LINKIEDIN_ID;
+        IN.API.Profile()
+        .ids(linkedInId)
+        .fields(['id', 'firstName', 'lastName', 'summary', 'educations', 'pictureUrls::(original)','headline','publicProfileUrl', 'skills', 'positions', 'projects'])
+        .result(function(result) {
+            console.log(result);
+            profile = result.values[0];
 
-		$scope.imageLoadPercentage = 0;
-		$scope.tagLoadPercentage = 0;
-		$scope.advLoadPercentage = 0;
-		var imgLoadInterval, tagLoadInterval, advLoadInterval;
+            TagService.loadProfile(profile);
+        });
+    }
 
-		$scope.visible = function(identifier) {
-			if (identifier === 'progress') {
-				return  $scope.imageLoadPercentage > 0;
-			}
-			else if (identifier === 'image') {
-				return $scope.imageLoadPercentage === 100;
-			}
-			else if (identifier === 'tag') {
-				return $scope.tagLoadPercentage === 100;
-			}
-			else if (identifier === 'adv') {
-				return $scope.advLoadPercentage === 100;
-			}
-		}
-
-		$scope.tagBaseHeight = function(value) {
-			return Math.min(28, 16 + value * 48);
-		}
-
-		$scope.completeSection = function(step) {
-			$scope.completedSection = step;
-		}
-
-		$scope.resetAll = function(exceptImgUrl) {
-			$scope.completedSection = 0;
-			
-			if(!exceptImgUrl){
-				$scope.imgUrl = null;
-			}
-			
-			$scope.tags = null;
-			$scope.advs = null;
-			$scope.imageLoadPercentage = 0;
-			$scope.tagLoadPercentage = 0;
-			$scope.advLoadPercentage = 0;
-			clearInterval(imgLoadInterval);
-			clearInterval(tagLoadInterval);
-			clearInterval(advLoadInterval);
-		}
-
-		$scope.scrollToSection = function(step) {
-			$('html,body').animate({
-				scrollTop: $('#step' + step).offset().top
-			}, 400);
-		}
-
-		$scope.getTags = function() {	
-			clearInterval(tagLoadInterval);
-			tagLoadPercentage = 20;
-
-			tagLoadInterval = setInterval(function() {
-				$scope.tagLoadPercentage = $scope.tagLoadPercentage < 49 ? $scope.tagLoadPercentage + 1 : 49; 
-				$scope.$apply();
-			}, 50);
-
-			TagService.getTags().then(function(data) {
-				console.log('getTags: ', data);
-
-				$scope.tags = data;
-
-				setTimeout(function() {
-					console.log('1s after getTags data: ', data);
-			
-					$scope.tagLoadPercentage = 100;
-					clearInterval(tagLoadInterval);
-					$scope.completeSection(2);
-					$scope.$apply();		
-				}, 1000);
-			});
-		}
-
-		$scope.maxValue = function(tags) {
-			if(tags.length && tags.length > 0) {
-				var max = -999;
-				for (var i = 0, len = tags.length; i < len; i++) {
-					if (tags[i].value > max) {
-						max = tags[i].value;
-					}
-				}
-				return max;
-			}
-			return 100;
-		}
-
-		$scope.getAdvs = function() {	
-			clearInterval(advLoadInterval);
-			advLoadPercentage = 20;
-
-			advLoadInterval = setInterval(function() {
-				$scope.advLoadPercentage = $scope.advLoadPercentage < 49 ? $scope.advLoadPercentage + 1 : 49; 
-				$scope.$apply();
-			}, 50);
-
-			TagService.getAdvs().then(function(data) {
-				console.log('getAdvs: ', data);
-				
-				if(angular.isArray(data)) {
-					data.forEach(function(element, index, array) {
-						element.value = element.value + 0.3 * (Math.random() - 0.5);
-					});
-				}
-				$scope.advs = data;
-
-
-				setTimeout(function() {
-					console.log('1s after getTags data: ', data);
-			
-					$scope.advLoadPercentage = 100;
-					clearInterval(advLoadInterval);
-					// $scope.completeSection(3);
-					$scope.$apply();		
-				}, 1000);
-			});
-		}
-
-
-		$scope.inputRandomImage = function() {
-			// $scope.imgUrl = null;
-			$scope.imgUrl = RandomImageGenerator.getShaopengUrl();
-			// $scope.$apply();
-
-		}
-
-		
-		$rootScope.$on('ImageStartToLoad', function(event, imgNewSrc) {
-			$scope.resetAll(true);
-			$scope.imageLoadPercentage = 0;
-			console.log('ImageStartToLoad');
-
-			clearInterval(imgLoadInterval);
-			imgLoadInterval = setInterval(function() {
-				$scope.imageLoadPercentage = $scope.imageLoadPercentage < 49 ? $scope.imageLoadPercentage + 1 : 49; 
-				$scope.$apply();
-			}, 500);
-
-			console.log('imgLoadInterval: ' + imgLoadInterval);
-
-		});
-
-		$rootScope.$on('ImageLoaded', function(event, imgTarget) {
-			clearInterval(imgLoadInterval);
-			$scope.imageLoadPercentage = 100;
-			$scope.completeSection(1);
-
-			$scope.$apply();
-		});
-
-	}]);
-
-
-appModule.service('TagService', ['$http', function ($http) {
-	this.getTags = function() {
-		var promise = $http.get('api/tags.json').then(function(response) {
-			return response.data;
-		});
-		return promise;
-	}
-
-	this.getAdvs = function() {
-		var promise = $http.get('api/advs.json').then(function(response) {
-			return response.data;
-		});
-		return promise;
-	}
-	
+    // Read a page's GET URL variables and return them as an associative array.
+    function getUrlVars()
+    {
+        var vars = [], hash;
+        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+        for(var i = 0; i < hashes.length; i++)
+        {
+            hash = hashes[i].split('=');
+            vars.push(hash[0]);
+            vars[hash[0]] = hash[1];
+        }
+        return vars;
+    }
 }]);
 
-appModule.factory('RandomImageGenerator', [function () {
-	
+appModule.controller('UIController', ['$scope', '$rootScope', 'TagService', 
+    function ($scope, $rootScope, TagService) {
+        $scope.SHAOPENG_LINKIEDIN_ID = TagService.SHAOPENG_LINKIEDIN_ID;
+        $scope.loadPercentage = {
+            linkedIn:   0,
+            summary:    0,
+            educations: 0,
+            skills:     0,
+            positions:  0,
+        };
 
-	return {
+        var imgLoadInterval, tagLoadInterval, advLoadInterval;
 
-		getUrl: function() {
-			return 'http://lorempixel.com/1024/768/cats/?dummy=' + Math.random();
-		},
+        $scope.$on('PROFILE', function(event, data) {
+            $scope.$apply(function() {
+                $scope.loadPercentage.linkedIn = 100;
+                $scope.completeSection(0);
 
-		getShaopengUrl: function() {
-			return 'http://shaopeng.us/images/banner800.jpg?' + Math.random();
-		}
+                $scope.profile = TagService.profile;   
+                $scope.summary = TagService.profile.summary;  
+                $scope.educations = TagService.educations;   
+                $scope.skills = TagService.skills;
+                $scope.positions = TagService.positions;    
+            });
+        });
 
-	};
-}])
+        $scope.$on('PROFILE_ALL', function(event, data) {
+            $scope.linkedInLoadPercentage = 100;
+            $scope.completeSection(0);
+            //$scope.$apply();
+        });
 
-appModule.directive('loadProgressIcon', [function () {
-	return {
-		restrict: 'A',
-		replace: true,
-		scope: {
-			iconclass: '@', 
-			progress: '@', 
-			reverse: '@'
-		},
-		template: '<div class="glyph-progress">	\
-		<div class=" view-port" ng-class="{\'fg\': reverse, \'bg\': !reverse}"><span class="{{iconclass}}"></span></div>	\
-		<div class=" view-port" ng-class="{\'bg\': reverse, \'fg\': !reverse}" style="height: {{reverse && progress || (100 - progress)}}%"><span class="{{iconclass}}"></span></div>	\
-		</div>',
-		link: function (scope, iElement, iAttrs) {
-			
-		}
-	};
-}])
+        $scope.findSchoolLogoUrlFromCompay = function(schoolName) {
+            var companyUrlMap = TagService.companyUrlMap;
+            for (key in companyUrlMap) {
+                var company = companyUrlMap[key];
+                console.log('look for: ', companyUrlMap[key]);
+                if(company.name && company.logoUrl && company.name === schoolName) {
+                    return company.logoUrl;
+                }
+            }
+            return false;
+        }
 
-appModule.directive('fadeInOnLoad', ['$rootScope', function ($rootScope) {
-	return {
-		restrict: 'A',
-		link: function (scope, element, attrs) {
+        $scope.displaySectionContent = function(section, contentProperty) {
+            $scope.loadPercentage[contentProperty] = 0;
+            
+            if($scope[contentProperty]) {
+                $scope.loadPercentage[contentProperty] = 100;
+                $scope.completeSection(section);
+                // $scope.$apply();
+            }
+        }
+
+        $scope.maxValue = function(tags) {
+            if(tags.length && tags.length > 0) {
+                var max = -999;
+                for (var i = 0, len = tags.length; i < len; i++) {
+                    if (tags[i].value > max) {
+                        max = tags[i].value;
+                    }
+                }
+                return max;
+            }
+            return 100;
+        }
+        
+        $scope.twinkleStyle = function(value, loadPercentage) {
+            var transitionString = 'top 0.4s ease ' +  (value * 3).toFixed(2) + 's' + ',' + 'opacity 0.4s ease ' +  value * 3 + 's' + ';';// + ',' + 'transform 0.4s ease ' + ';';
+            var animationDelayString = (10 + value * 6) + 's' + ';'; 
+            var styleString = 'font-size: ' + (16 + value * 12) + 'px' + ';' +
+            'line-height: ' + '1.5' + ';' +
+            /*'top: ' + (loadPercentage === 100) && '0' || '10px' + ';' +*/
+            '-webkit-transition: ' + transitionString +
+            '-moz-transition: ' + transitionString +
+            'transition: ' + transitionString +
+            '-webkit-animation-delay: ' + animationDelayString +
+            '-moz-animation-delay: ' + animationDelayString +
+            'animation-delay: ' + animationDelayString;
+
+            return styleString;
+
+        }
+
+        $scope.tagBaseHeight = function(value) {
+            return Math.min(28, 8 + value * 32);
+        }
+
+        $scope.completeSection = function(step) {
+            $scope.completedSection = step;
+        }
 
 
-			attrs.$observe('ngSrc', function(value) {
-				console.log('observe ' + value);
-				if(value) {
-					$rootScope.$broadcast('ImageStartToLoad', value);	
-				}
-				
-			});
+        $scope.scrollToSection = function(step) {
+            $('html,body').animate({
+                scrollTop: $('#step' + step).offset().top
+            }, 400);
+        }
 
-			element.on('load', function(e){
-				console.log('load', e);
-				$rootScope.$broadcast('ImageLoaded', e.target);
-			});
+        $scope.visible = function(identifier) {
+            if (identifier === 'linkedIn') {
+                return  $scope.loadPercentage[identifier] > 0;
+            }
+
+            else {
+                return $scope.loadPercentage[identifier] === 100;
+            }
+        }
 
 
-		}
-	};
-}]);
+    }]);
+
 
