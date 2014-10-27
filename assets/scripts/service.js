@@ -2,7 +2,7 @@ appModule.service('TagService', ['$http', '$rootScope', '$q', function ($http, $
     
     var that = this;
 
-    this.SHAOPENG_LINKIEDIN_ID = 'qC72fmJGlB';
+    // this.SHAOPENG_LINKIEDIN_ID = 'qC72fmJGlB';
 
     this.companyUrlMap = {};
     this.companyUrlMap[1043] =  {id: 1043, logoUrl: "https://media.licdn.com/mpr/mpr/p/3/005/07b/00a/05def42.png", name: "Siemens"};
@@ -24,21 +24,42 @@ appModule.service('TagService', ['$http', '$rootScope', '$q', function ($http, $
     }
 
     this.loadProfile = function(INProfile) {
-        that.profile = INProfile;
-        that.positions = groupPositionByYear(INProfile.positions);  
+        if(INProfile) {
+            that.profile = INProfile;
+            that.positions = groupPositionByYear(INProfile.positions);  
 
-        that.skills = flattenSkills(INProfile.skills);
-        that.educations = INProfile.educations.values;
+            that.skills = flattenSkills(INProfile.skills);
+            that.educations = INProfile.educations.values;
+            
+            console.log(that.profile);
+            getCompanyLogos(INProfile.positions).then(function(result){
+                console.log(result);
+                that.positions = groupPositionByYear(result);
+                console.log(that.positions);
+                // $rootScope.$broadcast('PROFILE_ALL', null);
+            });
+
+            $rootScope.$broadcast('PROFILE', null);
+        }
+        else if(INProfile === null) {
+            $http.get('api/shaopeng_linkedin_profile.json').success(function(data){
+                var INProfile = data;
+                that.profile = INProfile;
+                that.positions = groupPositionByYear(INProfile.positions);  
+
+                that.skills = flattenSkills(INProfile.skills);
+                that.educations = INProfile.educations.values;
+                
+                console.log(that.profile);
+                that.positions = getStaticCompanyLogos(INProfile.positions);
+                that.positions = groupPositionByYear(that.positions);
+                console.log(that.positions);
+                $rootScope.$broadcast('PROFILE', null);
+
+                // $rootScope.$broadcast('PROFILE', null);
+            });
+        }
         
-        console.log(that.profile);
-        getCompanyLogos(INProfile.positions).then(function(result){
-            console.log(result);
-            that.positions = groupPositionByYear(result);
-            console.log(that.positions);
-            $rootScope.$broadcast('PROFILE_ALL', null);
-        });
-
-        $rootScope.$broadcast('PROFILE', null);
     }
 
     function flattenSkills(INSkills) {
@@ -56,7 +77,14 @@ appModule.service('TagService', ['$http', '$rootScope', '$q', function ($http, $
         return a;
     }
 
-    
+    function getStaticCompanyLogos(INPositions) {
+        if(INPositions.values && angular.isArray(INPositions.values)) {
+            for (var i = 0; i < INPositions.values.length; i++ ) {
+                INPositions.values[i].logoUrl = that.companyUrlMap[INPositions.values[i].id];
+            }
+        }
+        return INPositions;
+    }
 
     function asyncLogoUrl(id) {
         var deferred = $q.defer();
@@ -118,6 +146,7 @@ appModule.service('TagService', ['$http', '$rootScope', '$q', function ($http, $
 
     function groupPositionByYear(positionsArray) {
         var positions = [];
+
         if(angular.isArray(positionsArray)) {
             positions = positionsArray;
         }

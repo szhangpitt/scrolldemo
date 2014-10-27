@@ -7,20 +7,47 @@ $(document).ready(function(){
 // var SHAOPENG_LINKIEDIN_ID = 'qC72fmJGlB';
 var appModule = angular.module('tagdemo', ['ngRoute']);
 
-appModule.controller('AppController', ['$scope', '$rootScope', 'TagService', '$routeParams', function ($scope, $rootScope, TagService, $routeParams) {
+appModule.controller('AppController', ['$scope', '$rootScope', 'TagService', 
+    function ($scope, $rootScope, TagService) {
 
-    $scope.getLinkedInData = function() {
-        var linkedInId = getUrlVars()['view'] === 'me' && 'me' || TagService.SHAOPENG_LINKIEDIN_ID;
-        IN.API.Profile()
-        .ids(linkedInId)
-        .fields(['id', 'firstName', 'lastName', 'summary', 'educations', 'pictureUrls::(original)','headline','publicProfileUrl', 'skills', 'positions', 'projects'])
-        .result(function(result) {
-            console.log(result);
-            profile = result.values[0];
+        var linkedInId = getUrlVars()['view'] === 'shaopeng' && 'shaopeng' || 'me';
+        var publicProfileUrl = encodeURIComponent('www.linkedin.com/in/shaopengzhang/');
 
-            TagService.loadProfile(profile);
-        });
-    }
+        if(linkedInId === 'me') {
+            $scope.staticApp = false;
+            //$scope.getLinkedInData() will be called by loadData onAuth linkedIn handler
+        }
+        else if(linkedInId === 'shaopeng'){
+            $scope.staticApp = true;
+            getStaticData();
+        } 
+
+        //iphone: landspace 568x212, vertical 320x460
+        $scope.possiblyOnMobile = window.innerWidth <= 568;
+
+        $scope.getLinkedInData = function() {
+            IN.API.Profile()
+            .ids(linkedInId)
+            .fields(['id', 'firstName', 'lastName', 'summary', 'educations', 'pictureUrls::(original)','headline','publicProfileUrl', 'skills', 'positions', 'projects'])
+            .result(function(result) {
+                console.log(result);
+                profile = result.values[0];
+                TagService.loadProfile(profile);
+            });
+        }
+
+        function getStaticData() {
+            TagService.loadProfile(null);
+        }
+
+        $scope.getPeopleData = function() {
+            var rawUrl = '/people/id=' + linkedInId + ':(id,first-name,last-name,headline,picture-urls::(original),summary,educations,skills,positions,public-profile-url)';
+            IN.API.Raw()
+            .result(function(results) {
+                console.log(results);
+            });
+        }
+
 
     // Read a page's GET URL variables and return them as an associative array.
     function getUrlVars()
@@ -51,7 +78,7 @@ appModule.controller('UIController', ['$scope', '$rootScope', 'TagService',
         var imgLoadInterval, tagLoadInterval, advLoadInterval;
 
         $scope.$on('PROFILE', function(event, data) {
-            $scope.$apply(function() {
+            //$scope.$apply(function() {
                 $scope.loadPercentage.linkedIn = 100;
                 $scope.completeSection(0);
 
@@ -60,8 +87,8 @@ appModule.controller('UIController', ['$scope', '$rootScope', 'TagService',
                 $scope.educations = TagService.educations;   
                 $scope.skills = TagService.skills;
                 $scope.positions = TagService.positions;    
-            });
-        });
+           // });
+    });
 
         $scope.$on('PROFILE_ALL', function(event, data) {
             $scope.linkedInLoadPercentage = 100;
@@ -121,9 +148,9 @@ appModule.controller('UIController', ['$scope', '$rootScope', 'TagService',
 
         }
 
-        $scope.tagBaseHeight = function(value) {
-            return Math.min(28, 8 + value * 32);
-        }
+        // $scope.tagBaseHeight = function(value) {
+        //     return Math.min(28, 8 + value * 32);
+        // }
 
         $scope.completeSection = function(step) {
             $scope.completedSection = step;
@@ -131,6 +158,7 @@ appModule.controller('UIController', ['$scope', '$rootScope', 'TagService',
 
 
         $scope.scrollToSection = function(step) {
+            //$('#step' + step).height(window.innerHeight);
             $('html,body').animate({
                 scrollTop: $('#step' + step).offset().top
             }, 400);

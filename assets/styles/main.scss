@@ -97,6 +97,12 @@
 .top-space-lg {
 	margin-top: 64px;
 }
+.top-space-sm {
+	margin-top: 16px;
+}
+.top-space-xs {
+	margin-top: 8px;
+}
 
 .aboutme-viewport {
 	font-size: 1em;
@@ -111,6 +117,7 @@
 
 		.headline{
 			font-size: 1em;
+			
 		}
 		.summary{
 			font-size: 1em;
@@ -218,6 +225,25 @@ article {
 	}
 }
 
+.bouncing-animation {
+	position: relative;
+	@include animation (bounce 2s infinite);
+
+	font-size: 24px;	
+}
+
+@include keyframes(bounce) {
+	0%, 20%, 50%, 80%, 100% {
+    @include transform(translateY(0));
+  }
+	40% {
+    @include transform(translateY(10px));
+  }
+	60% {
+    @include transform(translateY(10px));
+  }
+}
+
 @include keyframes(twinkle) {
 	0% {
 		color: $darkgray-dark;
@@ -264,7 +290,7 @@ article {
 		height: auto !important;
 		
 		& + .step{
-			height: 70em;
+			height: 40em;
 			top: -10px;
 			opacity: 1;
 			@include transition (top 0.4s ease-out 0.8s, opacity 0.4s ease-out 0.8s);
@@ -272,6 +298,14 @@ article {
 	}
 
 
+}
+
+#step0 {
+	@media (max-width: 320px) {
+		h1{
+		font-size: 28px;
+		}		
+	}	
 }
 
 
