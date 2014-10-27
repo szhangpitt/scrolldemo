@@ -123,7 +123,7 @@
               <div class="timeline text-left">
                 <dl>
                   <dt class="profile-picture">
-                    <img class="events-object img-rounded" ng-src="{{profile.pictureUrl}}">
+                    <img class="events-object img-rounded" ng-src="{{profile.pictureUrls.values[0]}}">
                   </dt>
                   <div ng-repeat="p in positions track by $index">                    
                     <dt ng-if="p.mark">{{p.mark}}</dt>
