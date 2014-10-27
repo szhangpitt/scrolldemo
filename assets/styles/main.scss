@@ -5,45 +5,27 @@
 	padding: 0;
 }
 
-// .article-viewport {
-// 	position: relative;
-// 	height: 90%;
-// 	overflow-y: scroll;
-// 	article {
-// 		position: relative;
-// 		@include transition (top 0.8s ease-out );
-// 	}
-
-// 	&.show-step-1 article {
-// 		top: -10px; 
-// 	}
-
-// 	&.show-step-2 article {
-// 		top: -50px; 
-// 	}
-
-// 	&.show-step-3 article {
-// 		top: -160px; 
-// 	}
-
-// }
 
 .glyph-progress {
-	height: 128px;
-	width: 128px;
+	height: 96px;
+	width: 96px;
 	margin: 15px auto;
 	position: relative;
 
 	.view-port {
 		position: absolute;
-		left: 0;
-		top: 0;
-		bottom: 0;
+		// left: 0;
+		// top: 0;
+		// bottom: 0;
 		overflow: hidden;
 		margin: 0 !important;
 
 		.glyphicon {
 			margin: 0 !important;
+		}
+		.glyphicon {
+			font-size: 96px;
+			margin: 48px;
 		}
 	}
 
@@ -56,11 +38,47 @@
 
 	.fg {
 		@include transition (height 0.8s ease-out );
-		.glyphicon {
-
-		}
-
 	}
+
+
+	&{
+		.bg {
+			height: 100%;
+		}
+		.fg {
+			height: 100%;
+		}
+	}
+
+	&.loaded {
+		.bg {
+			height: 100%;
+		}
+		.fg{
+			height: 0%;
+		}
+	}
+
+	&.reverse {
+		.fg {
+			height: 100%;
+		}
+		.bg {
+			height: 0%;
+		}
+	}
+	
+	&.reverse.loaded {
+		.fg{
+			height: 100%;
+		}
+		.bg{
+			height: 100%;
+		}
+	}
+
+
+
 }
 
 .transparent-first {
@@ -73,19 +91,37 @@
 	}
 }
 
-.reset {
+.top-space {
 	margin-top: 32px;
 }
+.top-space-lg {
+	margin-top: 64px;
+}
 
-.result-viewport {
+.aboutme-viewport {
+	font-size: 1em;
 	img {
-		max-width: 100%;
-		max-height: 300px;
+		max-width: 160px;
+		padding-top: 15px;
+
+		// float: left;
 	}
+	.intro {
+		font-size: 1em;
+
+		.headline{
+			font-size: 1em;
+		}
+		.summary{
+			font-size: 1em;
+		}
+	}
+
 }
 
 html, body{
 	// height: 100%;
+	background: #fafafa;
 }
 
 header{
@@ -96,14 +132,18 @@ header{
 	z-index: 999;
 }
 
+.article-viewport {
+	overflow:hidden;
+}
+
 article {
-	background: #fafafa;
+	
 
 	section.step {
 		background: #fafafa;
 		height:100%;
 		position: relative;
-		@include box-shadow(0 -6px 6px #aaa);
+		@include box-shadow(0 -6px 6px #ccc);
 
 		&.folded {
 			overflow: hidden;
@@ -117,10 +157,7 @@ article {
 				margin-bottom: 30px;
 			}
 
-			.glyphicon {
-				font-size: 128px;
-				margin: 48px;
-			}
+			
 
 			.form-group {
 				position: relative;
@@ -139,6 +176,12 @@ article {
 
 			.btn-lg {
 				font-size: 42px;
+				@media (max-width: 767px) and (min-width: 561px) {
+					font-size: 36px;
+				}
+				@media (max-width: 560px) {
+					font-size: 18px;
+				}
 			}
 
 			.text-lg {
@@ -149,32 +192,10 @@ article {
 }
 
 
-.tag-rank {
-	li {
-		list-style-type: none;
-
-		&:hover {
-			font-weight: bold;
-		}
-	}
-	.progress {
-		background-color: transparent;
-		.progress-bar {
-			width: 0%;
-			@include radius (border-radius, 4px);
-			@include transition (width 0.4s ease-out 2s);
-		}
-		.progress-label {
-			position: absolute; 
-			left: 100%; 
-			color: #666; 
-			margin-left: 0.5em
-		}
-	}
-}
 
 .adv-cloud {
 	li {
+		font-family: monospace, "Open Sans";
 		list-style-type: none;
 		display: inline-block;
 		margin: 8px 24px;
@@ -182,12 +203,16 @@ article {
 		position: relative;
 		top: 10px;
 
-		@include transition (top 0.4s ease-out);
-		
-		@include animation (twinkle 5s infinite);
+		// @include transition (top 0.4s ease-out);
+
+		&.visible {
+			top: 0px;
+			@include animation (twinkle 5s infinite);
+			@include transition (top 0.4s ease-out, opacity 0.4s ease-out);
+		}		
 
 		&:hover {
-			@include transform (scale(1.14));
+			// @include transform (scale(1.14));
 			@include transition (transform 0.4s ease-out);
 		}
 	}
@@ -200,6 +225,7 @@ article {
 
 	50% {
 		color: lighten($darkgray-dark, 60%);
+		// @include transform (scale(1.1));
 	}
 
 	100% {
@@ -207,66 +233,239 @@ article {
 	}
 }
 
-// We use this to creat animation effect.
-// Examples:
-// @include keyframes(move-the-object) {
-//   0%   { left: 100px; }
-//   100% { left: 200px; }
-// }
-// .object-to-animate {
-//   @include animation(move-the-object .5s 1);
-// } 
-
-.card-animation #step1 {
-	& + #step2 {
-		top: 0;
-		margin-top: 0;
-		@include transition (top 0.4s ease-out 0.1s);
-
-		& + #step3{
-			top: -90%;
-			margin-top: 0;              
-			@include transition (top 0.4s ease-out);
-		}
-	}
-
-	&.folded + #step2 {
-		top: -100%;
-		margin-top: 60px;
-		@include transition (top 0.4s ease-out);
-
-		& + #step3 {       
-			top: -100%;
-			margin-top: 0;
-			@include transition (top 0.4s ease-out);
-		}
-
-		&.folded + #step3 {
-			top: -200%;
-			margin-top: 60px;
-			@include transition (top 0.4s ease-out);
-		}
-	}
-}
 
 .linear-scroll-animation {
 	height: auto;
-	#step1, #step2, #step3 {
-		top: 0px;
-		@include transition (top 0.4s ease-out 0.8s);
-	}
+	// #step1, #step2, #step3 {
+	// 	top: 0px;
+	// 	@include transition (top 0.4s ease-out 0.8s);
+	// }
 
-	#step2, #step3 {
+	.step{
+		// top: 0px;
+		@include transition (top 0.4s ease-out 0.8s);
+		height: 0;
 		top: 20px;
 		opacity: 0;
 	}
 
-	#step1.folded + #step2, 
-	#step1.folded + #step2.folded + #step3 {
-		top: -10px;
+	#step0 {
+		height: auto;
 		opacity: 1;
-		@include transition (all 0.4s ease-out 0.8s);
+		@include box-shadow(none);
+		margin-bottom: 40px;
+	}
+
+	#step1 {
+		// top: 0;
+	}
+
+	.step.folded {
+		height: auto !important;
+		
+		& + .step{
+			height: 70em;
+			top: -10px;
+			opacity: 1;
+			@include transition (top 0.4s ease-out 0.8s, opacity 0.4s ease-out 0.8s);
+		}
+	}
+
+
+}
+
+
+.timeline {
+	dl {
+		&:before {
+			@media (max-width: 560px) {
+				left: 50%;
+				top: 130px;
+				bottom: 20px;
+			}
+
+			@media (min-width: 561px) {
+				top: 76px;
+			}
+		}
+		dt {
+			&.profile-picture {
+				@media (min-width: 561px) {
+					display: none;
+				}
+
+				background-color: none;
+				@include box-shadow ( 0 0 8px #ccc);
+				
+				width: 80px;
+				padding: 0;
+
+				@media (min-width: 561px) and (max-width: 767px) {
+					margin-left: 20px;
+				}
+
+				img{
+					width: 80px;
+				}
+			}
+
+			@media (max-width: 560px) {
+				margin: 0 auto 30px;
+			}
+		}
+		dd {
+			.time {
+				width: auto;
+				@media (max-width: 560px) {
+					top: 0;
+					position: static;
+				}
+				@media (min-width: 561px) and (max-width: 767px) {
+					top: 0;
+					left: 90px;
+				}
+
+			}
+
+			.circ {
+				@media (max-width: 560px) {
+					display: none;
+				}
+			}
+
+			.events {
+				padding-bottom: 10px;
+				@include box-shadow ( 0 0 8px #ccc);
+
+				@media (max-width: 560px) {
+					float: none !important;
+					margin-top: 0;
+					width: 100% !important;
+
+					&:before {
+						border-color: transparent transparent white transparent !important;
+						left: 12px !important; 
+						top: -12px !important; 
+					}
+				}
+				@media (min-width: 561px) and (max-width: 767px) {
+					float: left !important;
+					left: 90px;
+				}
+				
+				.logo-container{
+					height: 48px;
+					margin-right: 10px;
+
+					.vertical-helper{
+						height: 100%;
+						display: inline-block;
+						vertical-align: middle;
+					}
+					img {
+						vertical-align: middle;
+						margin-right: 0;
+					}
+				}
+				img {
+					width: 48px; 
+					height: auto;
+
+					@media (max-width: 560px) {
+						display: none;
+					}
+
+				}
+
+				.events-body {
+					.events-heading {
+						margin-bottom: 5px;
+					}
+					p {
+						font-size: 0.9em;
+						padding-right: 1em;
+						margin-bottom: 0;
+						position: relative;
+						
+						max-height: 2.8em;
+
+						@include transition(max-height 0.2s ease-out 0s);
+
+						.mask {
+							position: absolute;
+							bottom: 0;
+							width: 100%;
+							height: 1.5em;
+							opacity: 1;
+							background: -moz-linear-gradient(top,  rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%); /* FF3.6+ */
+							background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(255,255,255,1))); /* Chrome,Safari4+ */
+							background: -webkit-linear-gradient(top,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%); /* Chrome10+,Safari5.1+ */
+							background: -o-linear-gradient(top,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%); /* Opera 11.10+ */
+							background: -ms-linear-gradient(top,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%); /* IE10+ */
+							background: linear-gradient(to bottom,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%); /* W3C */
+							filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */
+							@include transition(opacity 0.5s ease 0);
+						}
+					}
+				}
+
+				&:not(.expanded):hover {
+					cursor: pointer;
+
+					p{
+						max-height: 6.5em;
+						@include transition(max-height 0.2s ease-out 0.6s);
+					}
+				}
+
+				&.expanded {
+					p {
+						max-height: 40em;
+						@include transition(max-height 0.2s ease-out 0s);
+
+						.mask {
+							opacity: 0;
+							@include transition(opacity 0.5s ease 0);
+						}
+					}
+				}
+			}
+		}
+
+		@media (min-width: 768px) {
+			dd.pos-right {
+				.time {
+					margin-left: auto;
+					left: auto;
+					right: 50%;
+				}
+			}
+		}
 	}
 }
 
+.IN-widget {
+	font-size: 1em;
+	
+	span[id*="logo"] {
+		font-size: 1em;
+	}
+	span[id$="title"] {
+		font-size: 1em;
+
+	}
+	span[id*="mark"] {
+		font-size: 1em;
+
+	}
+	span[id*="title-text"] {
+		font-size: 1em;
+
+	}
+
+	a {
+		font-size: 1em;
+
+	}
+}
 
